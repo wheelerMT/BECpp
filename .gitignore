@@ -30,3 +30,7 @@
 *.exe
 *.out
 *.app
+
+# Ignored directories
+cmake-build-debug
+.idea
