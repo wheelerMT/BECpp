@@ -8,42 +8,36 @@
 
 void Grid::constructGridParams()
 {
-    m_nx = std::get<0>(m_points);
-    m_ny = std::get<1>(m_points);
-
-    // Gets and calculates grid spacings
-    m_dx = std::get<0>(m_grid_spacing);
-    m_dy = std::get<1>(m_grid_spacing);
-    m_dkx = PI / (m_nx / 2. * m_dx);
-    m_dky = PI / (m_ny / 2. * m_dy);
+    // Calculate k-space grid spacing
+    dkx = PI / (nx / 2. * dx);
+    dky = PI / (ny / 2. * dy);
 
     // Sets length of sides of box
-    m_len_x = m_nx * m_dx;
-    m_len_y = m_ny * m_dy;
-
+    len_x = nx * dx;
+    len_y = ny * dy;
 }
 
 void Grid::constructGrids()
 {
     // Set grid sizes
-    X.resize(m_nx, std::vector<double>(m_ny));
-    Y.resize(m_nx, std::vector<double>(m_ny));
-    Kx.resize(m_nx, std::vector<double>(m_ny));
-    Ky.resize(m_nx, std::vector<double>(m_ny));
+    X.resize(nx, std::vector<double>(ny));
+    Y.resize(nx, std::vector<double>(ny));
+    Kx.resize(nx, std::vector<double>(ny));
+    Ky.resize(nx, std::vector<double>(ny));
 
     // Construct grids
-    for (int i = 0; i < m_nx; ++i)
+    for (int i = 0; i < nx; ++i)
     {
-        for (int j = 0; j < m_ny; ++j)
+        for (int j = 0; j < ny; ++j)
         {
-            X[i][j] = (j - m_nx / 2.) * m_dx;
-            Kx[i][j] = (j - m_nx / 2.) * m_dkx;
-            Y[j][i] = (j - m_ny / 2.) * m_dy;
-            Ky[j][i] = (j - m_ny / 2.) * m_dky;
+            X[i][j] = (j - nx / 2.) * dx;
+            Kx[i][j] = (j - nx / 2.) * dkx;
+            Y[j][i] = (j - ny / 2.) * dy;
+            Ky[j][i] = (j - ny / 2.) * dky;
         }
     }
 
-    // Shift the k-space grids so they are in the right order
+    // Shift the k-space grids, so they are in the right order
     fftshift();
 }
 
@@ -63,18 +57,18 @@ void Grid::fftshift()
     std::vector<std::vector<double>> Ky_copy = Ky;
 
     // Reverse each row
-    for (int i = 0; i < m_nx; i++)
+    for (int i = 0; i < nx; i++)
     {
-        for (int j = 0; j < m_ny; j++)
+        for (int j = 0; j < ny; j++)
         {
-            if (j < m_nx / 2)
+            if (j < nx / 2)
             {
-                Kx[i][j] = Kx_copy[i][m_nx / 2 + j];
-                Ky[i][j] = Ky_copy[i][m_nx / 2 + j];
-            } else if (j >= m_nx / 2)
+                Kx[i][j] = Kx_copy[i][nx / 2 + j];
+                Ky[i][j] = Ky_copy[i][nx / 2 + j];
+            } else if (j >= nx / 2)
             {
-                Kx[i][j] = Kx_copy[i][j - m_nx / 2];
-                Ky[i][j] = Ky_copy[i][j - m_nx / 2];
+                Kx[i][j] = Kx_copy[i][j - nx / 2];
+                Ky[i][j] = Ky_copy[i][j - nx / 2];
             }
         }
     }
@@ -84,25 +78,25 @@ void Grid::fftshift()
     Ky_copy = Ky;
 
     // Reverse each column
-    for (int i = 0; i < m_nx; i++)
+    for (int i = 0; i < nx; i++)
     {
-        for (int j = 0; j < m_ny; j++)
+        for (int j = 0; j < ny; j++)
         {
-            if (j < m_nx / 2)
+            if (j < nx / 2)
             {
-                Kx[j][i] = Kx_copy[m_nx / 2 + j][i];
-                Ky[j][i] = Ky_copy[m_nx / 2 + j][i];
-            } else if (j >= m_nx / 2)
+                Kx[j][i] = Kx_copy[nx / 2 + j][i];
+                Ky[j][i] = Ky_copy[nx / 2 + j][i];
+            } else if (j >= nx / 2)
             {
-                Kx[j][i] = Kx_copy[j - m_nx / 2][i];
-                Ky[j][i] = Ky_copy[j - m_nx / 2][i];
+                Kx[j][i] = Kx_copy[j - nx / 2][i];
+                Ky[j][i] = Ky_copy[j - nx / 2][i];
             }
         }
     }
 }
 
-Grid::Grid(const std::pair<int, int> points, const std::pair<double, double> grid_spacing)
-        : m_points{points}, m_grid_spacing{grid_spacing}
+Grid::Grid(int t_nx, int t_ny, double t_dx, double t_dy)
+        : nx{t_nx}, ny{t_ny}, dx{t_dx}, dy{t_dy}
 {
     constructGridParams();
     constructGrids();

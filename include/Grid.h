@@ -11,22 +11,6 @@
 class Grid
 {
 private:
-    // Grid points
-    std::pair<int, int> m_points{};
-    int m_nx{};
-    int m_ny{};
-
-    // Grid spacing
-    std::pair<double, double> m_grid_spacing{};
-    double m_dx{};
-    double m_dy{};
-    double m_dkx{};
-    double m_dky{};
-
-    // Grid lengths
-    double m_len_x{};
-    double m_len_y{};
-
     // Grid & parameter construction functions
     void constructGridParams();
 
@@ -35,6 +19,20 @@ private:
     void fftshift();
 
 public:
+    // Grid points
+    int nx{};
+    int ny{};
+
+    // Grid spacing
+    double dx{};
+    double dy{};
+    double dkx{};
+    double dky{};
+
+    // Grid lengths
+    double len_x{};
+    double len_y{};
+
     // Grids
     std::vector<std::vector<double>> X{};
     std::vector<std::vector<double>> Y{};
@@ -42,7 +40,7 @@ public:
     std::vector<std::vector<double>> Ky{};
 
     // Constructor
-    Grid(std::pair<int, int> points, std::pair<double, double> grid_spacing);
+    Grid(int t_nx, int t_ny, double t_dx, double t_dy);
 
     // Declare wavefunction class a friend
     friend class Wavefunction;
