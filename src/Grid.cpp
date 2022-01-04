@@ -71,8 +71,7 @@ void Grid::fftshift()
             {
                 Kx[i][j] = Kx_copy[i][m_nx / 2 + j];
                 Ky[i][j] = Ky_copy[i][m_nx / 2 + j];
-            }
-            else if (j >= m_nx / 2)
+            } else if (j >= m_nx / 2)
             {
                 Kx[i][j] = Kx_copy[i][j - m_nx / 2];
                 Ky[i][j] = Ky_copy[i][j - m_nx / 2];
@@ -93,8 +92,7 @@ void Grid::fftshift()
             {
                 Kx[j][i] = Kx_copy[m_nx / 2 + j][i];
                 Ky[j][i] = Ky_copy[m_nx / 2 + j][i];
-            }
-            else if (j >= m_nx / 2)
+            } else if (j >= m_nx / 2)
             {
                 Kx[j][i] = Kx_copy[j - m_nx / 2][i];
                 Ky[j][i] = Ky_copy[j - m_nx / 2][i];
@@ -104,7 +102,7 @@ void Grid::fftshift()
 }
 
 Grid::Grid(const std::pair<int, int> points, const std::pair<double, double> grid_spacing)
-: m_points{points}, m_grid_spacing{grid_spacing}
+        : m_points{points}, m_grid_spacing{grid_spacing}
 {
     constructGridParams();
     constructGrids();

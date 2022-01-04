@@ -29,7 +29,9 @@ private:
 
     // Grid & parameter construction functions
     void constructGridParams();
+
     void constructGrids();
+
     void fftshift();
 
 public:
@@ -45,4 +47,5 @@ public:
     // Declare wavefunction class a friend
     friend class Wavefunction;
 };
+
 #endif //BECPP_GRID_H
