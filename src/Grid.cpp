@@ -32,9 +32,9 @@ void Grid::constructGrids()
     Ky.resize(m_nx, std::vector<double>(m_ny));
 
     // Construct grids
-    for (int i = 0; i < m_nx; i++)
+    for (int i = 0; i < m_nx; ++i)
     {
-        for (int j = 0; j < m_ny; j++)
+        for (int j = 0; j < m_ny; ++j)
         {
             X[i][j] = (j - m_nx / 2.) * m_dx;
             Kx[i][j] = (j - m_nx / 2.) * m_dkx;
@@ -103,7 +103,7 @@ void Grid::fftshift()
     }
 }
 
-Grid::Grid(std::pair<int, int> points, std::pair<double, double> grid_spacing)
+Grid::Grid(const std::pair<int, int> points, const std::pair<double, double> grid_spacing)
 : m_points{points}, m_grid_spacing{grid_spacing}
 {
     constructGridParams();
