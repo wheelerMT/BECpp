@@ -3,7 +3,7 @@
 //
 
 
-#include "Grid.h"
+#include "grid.h"
 #include "constants.h"
 
 void Grid::constructGridParams()
