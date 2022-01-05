@@ -3,8 +3,8 @@ project(BECpp)
 
 set(CMAKE_CXX_STANDARD 20)
 
-set(SOURCES src/main.cpp src/grid.cpp)
-set(INCLUDES include/constants.h include/grid.h)
+set(SOURCES src/main.cpp src/grid.cpp src/wavefunction.cpp)
+set(INCLUDES include/constants.h include/grid.h include/wavefunction.h)
 
 add_executable(BECpp ${SOURCES} ${INCLUDES})
 
