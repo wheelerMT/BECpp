@@ -101,3 +101,9 @@ Grid::Grid(int t_nx, int t_ny, double t_dx, double t_dy)
     constructGridParams();
     constructGrids();
 }
+
+Grid::Grid(const Grid &t_grid) : nx{t_grid.nx}, ny{t_grid.ny}, dx{t_grid.dx}, dy{t_grid.dy}
+{
+    constructGridParams();
+    constructGrids();
+}

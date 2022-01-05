@@ -20,8 +20,8 @@ private:
 
 public:
     // Grid points
-    int nx{};
-    int ny{};
+    const int nx{};
+    const int ny{};
 
     // Grid spacing
     double dx{};
@@ -39,8 +39,10 @@ public:
     std::vector<std::vector<double>> Kx{};
     std::vector<std::vector<double>> Ky{};
 
-    // Constructor
+    // Constructors
     Grid(int t_nx, int t_ny, double t_dx, double t_dy);
+
+    Grid(const Grid &t_grid);  // Copy constructor
 
     // Declare wavefunction class a friend
     friend class Wavefunction;
