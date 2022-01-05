@@ -11,8 +11,10 @@
 #include <string>
 #include <iostream>
 #include <random>
+#include <algorithm>
 #include "grid.h"
 #include "constants.h"
+#include "fftw3.h"
 
 // Define arrays
 using complexVector_t = std::vector<std::complex<double>>;
@@ -23,6 +25,15 @@ class Wavefunction
 {
 private:
     void generateInitialState(const std::string &gs_phase);
+    void generateFFTPlans();
+
+    // FFT plans
+    fftw_plan forward_plus{};
+    fftw_plan forward_zero{};
+    fftw_plan forward_minus{};
+    fftw_plan backward_plus{};
+    fftw_plan backward_zero{};
+    fftw_plan backward_minus{};
 
 public:
     // Wavefunction components arrays
@@ -35,16 +46,22 @@ public:
     complexVector_t zero_k{};
     complexVector_t minus_k{};
 
+    // Reference to grid object
+    Grid &grid;
+
     // Constructor
     Wavefunction(Grid &t_grid, const std::string &gs_phase);
+
+    // FFT functions
+    void fft();
+    void ifft();
 
     // Member functions
     void add_noise(std::string const &components, double mean, double stddev);
 
     doubleArray_t density();
 
-    // Reference to grid object
-    Grid &grid;
+
 };
 
 

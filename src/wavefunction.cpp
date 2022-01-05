@@ -33,6 +33,7 @@ Wavefunction::Wavefunction(Grid &t_grid, const std::string &gs_phase) : grid{t_g
 
     // Populates wavefunction components
     generateInitialState(gs_phase);
+    generateFFTPlans();
 }
 
 void Wavefunction::add_noise(const std::string &components, double mean, double stddev)
@@ -75,4 +76,43 @@ doubleArray_t Wavefunction::density()
         }
     }
     return density;
+}
+
+void Wavefunction::generateFFTPlans()
+{
+
+    forward_plus = fftw_plan_dft_2d(grid.nx, grid.ny, reinterpret_cast<fftw_complex*>(&plus[0]),
+                                    reinterpret_cast<fftw_complex*>(&plus_k[0]), FFTW_FORWARD, FFTW_MEASURE);
+    forward_zero = fftw_plan_dft_2d(grid.nx, grid.ny, reinterpret_cast<fftw_complex*>(&zero[0]),
+                                    reinterpret_cast<fftw_complex*>(&zero_k[0]), FFTW_FORWARD, FFTW_MEASURE);
+    forward_minus = fftw_plan_dft_2d(grid.nx, grid.ny, reinterpret_cast<fftw_complex*>(&minus[0]),
+                                     reinterpret_cast<fftw_complex*>(&minus_k[0]), FFTW_FORWARD, FFTW_MEASURE);
+
+    backward_plus = fftw_plan_dft_2d(grid.nx, grid.ny, reinterpret_cast<fftw_complex*>(&plus_k[0]),
+                                     reinterpret_cast<fftw_complex*>(&plus[0]), FFTW_BACKWARD, FFTW_MEASURE);
+    backward_zero = fftw_plan_dft_2d(grid.nx, grid.ny, reinterpret_cast<fftw_complex*>(&zero_k[0]),
+                                     reinterpret_cast<fftw_complex*>(&zero[0]), FFTW_BACKWARD, FFTW_MEASURE);
+    backward_minus = fftw_plan_dft_2d(grid.nx, grid.ny, reinterpret_cast<fftw_complex*>(&minus_k[0]),
+                                      reinterpret_cast<fftw_complex*>(&minus[0]), FFTW_BACKWARD, FFTW_MEASURE);
+}
+
+void Wavefunction::fft()
+{
+    fftw_execute(forward_plus);
+    fftw_execute(forward_zero);
+    fftw_execute(forward_minus);
+}
+
+void Wavefunction::ifft()
+{
+    fftw_execute(backward_plus);
+    fftw_execute(backward_zero);
+    fftw_execute(backward_minus);
+
+    // Scale output
+    double size = grid.nx * grid.ny;
+    std::transform(plus.begin(), plus.end(), plus.begin(), [&size](auto& c) { return c / size; });
+    std::transform(zero.begin(), zero.end(), zero.begin(), [&size](auto& c) { return c / size; });
+    std::transform(minus.begin(), minus.end(), minus.begin(), [&size](auto& c) { return c / size; });
+
 }
