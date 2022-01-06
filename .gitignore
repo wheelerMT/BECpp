@@ -34,3 +34,4 @@
 # Ignored directories
 cmake-build-debug
 .idea
+lib
