@@ -21,7 +21,7 @@ void Wavefunction::generateInitialState(const std::string &gs_phase)
     }
 }
 
-Wavefunction::Wavefunction(Grid &t_grid, const std::string &gs_phase) : grid{t_grid}
+Wavefunction::Wavefunction(Grid &grid, const std::string &gs_phase) : grid{grid}
 {
     // Size arrays
     plus.resize(grid.nx * grid.ny);

@@ -95,14 +95,14 @@ void Grid::fftshift()
     }
 }
 
-Grid::Grid(int t_nx, int t_ny, double t_dx, double t_dy)
-        : nx{t_nx}, ny{t_ny}, dx{t_dx}, dy{t_dy}
+Grid::Grid(int nx, int ny, double dx, double dy)
+        : nx{nx}, ny{ny}, dx{dx}, dy{dy}
 {
     constructGridParams();
     constructGrids();
 }
 
-Grid::Grid(const Grid &t_grid) : nx{t_grid.nx}, ny{t_grid.ny}, dx{t_grid.dx}, dy{t_grid.dy}
+Grid::Grid(const Grid &grid) : nx{grid.nx}, ny{grid.ny}, dx{grid.dx}, dy{grid.dy}
 {
     constructGridParams();
     constructGrids();

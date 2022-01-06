@@ -40,9 +40,9 @@ public:
     std::vector<std::vector<double>> Ky{};
 
     // Constructors
-    Grid(int t_nx, int t_ny, double t_dx, double t_dy);
+    Grid(int nx, int ny, double dx, double dy);
 
-    Grid(const Grid &t_grid);  // Copy constructor
+    Grid(const Grid &grid);  // Copy constructor
 
     // Declare wavefunction class a friend
     friend class Wavefunction;

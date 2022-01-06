@@ -50,7 +50,7 @@ public:
     Grid &grid;
 
     // Constructor
-    Wavefunction(Grid &t_grid, const std::string &gs_phase);
+    Wavefunction(Grid &grid, const std::string &gs_phase);
 
     // FFT functions
     void fft();
