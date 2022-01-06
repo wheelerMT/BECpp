@@ -95,7 +95,7 @@ void Grid::fftshift()
     }
 }
 
-Grid::Grid(int nx, int ny, double dx, double dy)
+Grid::Grid(unsigned int nx, unsigned int ny, double dx, double dy)
         : nx{nx}, ny{ny}, dx{dx}, dy{dy}
 {
     constructGridParams();

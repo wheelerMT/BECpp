@@ -20,8 +20,8 @@ private:
 
 public:
     // Grid points
-    const int nx{};
-    const int ny{};
+    const unsigned int nx{};
+    const unsigned int ny{};
 
     // Grid spacing
     double dx{};
@@ -40,7 +40,7 @@ public:
     std::vector<std::vector<double>> Ky{};
 
     // Constructors
-    Grid(int nx, int ny, double dx, double dy);
+    Grid(unsigned int nx, unsigned int ny, double dx, double dy);
 
     Grid(const Grid &grid);  // Copy constructor
 
