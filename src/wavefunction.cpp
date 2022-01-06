@@ -32,8 +32,8 @@ Wavefunction::Wavefunction(Grid &grid, const std::string &gs_phase) : grid{grid}
     minus_k.resize(grid.nx * grid.ny);
 
     // Populates wavefunction components
-    generateInitialState(gs_phase);
     generateFFTPlans();
+    generateInitialState(gs_phase);
 }
 
 void Wavefunction::add_noise(const std::string &components, double mean, double stddev)
