@@ -8,6 +8,8 @@
 #include <utility>
 #include <vector>
 
+using doubleArray_t = std::vector<std::vector<double>>;
+
 class Grid
 {
 private:
@@ -34,10 +36,10 @@ public:
     double len_y{};
 
     // Grids
-    std::vector<std::vector<double>> X{};
-    std::vector<std::vector<double>> Y{};
-    std::vector<std::vector<double>> Kx{};
-    std::vector<std::vector<double>> Ky{};
+    doubleArray_t X{};
+    doubleArray_t Y{};
+    doubleArray_t Kx{};
+    doubleArray_t Ky{};
 
     // Constructors
     Grid(unsigned int nx, unsigned int ny, double dx, double dy);
