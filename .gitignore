@@ -33,5 +33,7 @@
 
 # Ignored directories
 cmake-build-debug
+cmake-build-debug-coverage
 .idea
 lib
+data
