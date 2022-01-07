@@ -51,9 +51,31 @@ void DataManager::generate_wfn_datasets(const Grid &grid)
 
     // Create wavefunction datasets
     file.createDataSet("/wavefunction/psi_plus", ds_plus,
-                       HighFive::AtomicType<std::complex<double>>(),props);
+                       HighFive::AtomicType<std::complex<double>>(), props);
     file.createDataSet("/wavefunction/psi_zero", ds_zero,
-                       HighFive::AtomicType<std::complex<double>>(),props);
+                       HighFive::AtomicType<std::complex<double>>(), props);
     file.createDataSet("/wavefunction/psi_minus", ds_minus,
-                       HighFive::AtomicType<std::complex<double>>(),props);
+                       HighFive::AtomicType<std::complex<double>>(), props);
+
+}
+
+void DataManager::save_wavefunction_data(Wavefunction &psi)
+{
+    // Load in datasets
+    HighFive::DataSet ds_plus = file.getDataSet("/wavefunction/psi_plus");
+    HighFive::DataSet ds_zero = file.getDataSet("/wavefunction/psi_zero");
+    HighFive::DataSet ds_minus = file.getDataSet("/wavefunction/psi_minus");
+
+    // Resize datasets
+    ds_plus.resize({psi.grid.nx * psi.grid.ny, save_index + 1});
+    ds_zero.resize({psi.grid.nx * psi.grid.ny, save_index + 1});
+    ds_minus.resize({psi.grid.nx * psi.grid.ny, save_index + 1});
+
+    // Save new wavefunction data
+    ds_plus.select({0, save_index}, {psi.grid.nx * psi.grid.ny, 1}).write(psi.plus);
+    ds_zero.select({0, save_index}, {psi.grid.nx * psi.grid.ny, 1}).write(psi.zero);
+    ds_minus.select({0, save_index}, {psi.grid.nx * psi.grid.ny, 1}).write(psi.minus);
+
+    // Increase save index
+    save_index += 1;
 }

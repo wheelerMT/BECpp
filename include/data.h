@@ -31,6 +31,7 @@ struct Parameters
 class DataManager
 {
 private:
+    unsigned int save_index{0};
 
     void save_parameters(const Parameters &params, const Grid &grid);
 
