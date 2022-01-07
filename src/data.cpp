@@ -40,7 +40,7 @@ void DataManager::generate_wfn_datasets(const Grid &grid)
 
     // Use chunking
     HighFive::DataSetCreateProps props;
-    props.add(HighFive::Chunking(std::vector<hsize_t>{2, 1}));
+    props.add(HighFive::Chunking(std::vector<hsize_t>{(grid.nx * grid.ny) / 4, 1}));
 
     // Create wavefunction datasets
     file.createDataSet("/wavefunction/psi_plus", ds_plus,
