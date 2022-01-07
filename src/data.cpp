@@ -13,12 +13,12 @@ DataManager::DataManager(const std::string &filename, const Parameters &params, 
         filename{filename},
         file{filename, HighFive::File::ReadWrite | HighFive::File::Create | HighFive::File::Truncate}
 {
-    save_parameters(params);
+    save_parameters(params, grid);
     generate_wfn_datasets(grid);
 
 }
 
-void DataManager::save_parameters(const Parameters &params)
+void DataManager::save_parameters(const Parameters &params, const Grid &grid)
 {
     // Save condensate and time parameters to file
     file.createDataSet("/parameters/c0", params.c0);
@@ -26,6 +26,13 @@ void DataManager::save_parameters(const Parameters &params)
     file.createDataSet("/time/nt", params.nt);
     file.createDataSet("/time/nframe", params.nframe);
     file.createDataSet("/time/dt", params.dt);
+
+    // Save grid parameters to file
+    file.createDataSet("/grid/nx", grid.nx);
+    file.createDataSet("/grid/ny", grid.ny);
+    file.createDataSet("/grid/dx", grid.dx);
+    file.createDataSet("/grid/dy", grid.dy);
+
 }
 
 void DataManager::generate_wfn_datasets(const Grid &grid)

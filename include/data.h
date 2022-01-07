@@ -31,12 +31,8 @@ struct Parameters
 class DataManager
 {
 private:
-//    HighFive::DataSet dset_plus;
-//    HighFive::DataSet dset_zero;
-//    HighFive::DataSet dset_minus;
 
-
-    void save_parameters(const Parameters &params);
+    void save_parameters(const Parameters &params, const Grid &grid);
 
     void generate_wfn_datasets(const Grid &grid);
 
