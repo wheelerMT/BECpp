@@ -24,6 +24,7 @@ void Grid::constructGrids()
     Y.resize(nx, std::vector<double>(ny));
     Kx.resize(nx, std::vector<double>(ny));
     Ky.resize(nx, std::vector<double>(ny));
+    K.resize(nx, std::vector<double>(ny));
 
     // Construct grids
     for (int i = 0; i < nx; ++i)
