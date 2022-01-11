@@ -40,6 +40,7 @@ public:
     doubleArray_t Y{};
     doubleArray_t Kx{};
     doubleArray_t Ky{};
+    doubleArray_t K{};
 
     // Constructors
     Grid(unsigned int nx, unsigned int ny, double dx, double dy);

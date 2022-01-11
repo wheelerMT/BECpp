@@ -2,7 +2,7 @@
 // Created by mattw on 04/01/2022.
 //
 
-
+#include <cmath>
 #include "grid.h"
 #include "constants.h"
 
@@ -34,6 +34,7 @@ void Grid::constructGrids()
             Kx[i][j] = (j - nx / 2.) * dkx;
             Y[j][i] = (j - ny / 2.) * dy;
             Ky[j][i] = (j - ny / 2.) * dky;
+            K[i][j] = std::pow(Kx[i][j], 2) + std::pow(Ky[i][j], 2);
         }
     }
 
