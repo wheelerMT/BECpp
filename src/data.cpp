@@ -4,8 +4,8 @@
 
 #include "data.h"
 
-Parameters::Parameters(double c0, double c2, double q, int nt, int nframe, double dt, doubleArray_t &V)
-        : c0{c0}, c2{c2}, q{q}, nt{nt}, nframe{nframe}, dt{dt}, V{V}
+Parameters::Parameters(double c0, double c2, double p, double q, int nt, int nframe, double dt, doubleArray_t &V)
+        : c0{c0}, c2{c2}, p{p}, q{q}, nt{nt}, nframe{nframe}, dt{dt}, V{V}
 {
 }
 
