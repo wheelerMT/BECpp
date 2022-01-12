@@ -81,19 +81,19 @@ doubleArray_t Wavefunction::density()
 void Wavefunction::generateFFTPlans()
 {
 
-    forward_plus = fftw_plan_dft_2d(grid.nx, grid.ny, reinterpret_cast<fftw_complex*>(&plus[0]),
-                                    reinterpret_cast<fftw_complex*>(&plus_k[0]), FFTW_FORWARD, FFTW_MEASURE);
-    forward_zero = fftw_plan_dft_2d(grid.nx, grid.ny, reinterpret_cast<fftw_complex*>(&zero[0]),
-                                    reinterpret_cast<fftw_complex*>(&zero_k[0]), FFTW_FORWARD, FFTW_MEASURE);
-    forward_minus = fftw_plan_dft_2d(grid.nx, grid.ny, reinterpret_cast<fftw_complex*>(&minus[0]),
-                                     reinterpret_cast<fftw_complex*>(&minus_k[0]), FFTW_FORWARD, FFTW_MEASURE);
+    forward_plus = fftw_plan_dft_2d(grid.nx, grid.ny, reinterpret_cast<fftw_complex *>(&plus[0]),
+                                    reinterpret_cast<fftw_complex *>(&plus_k[0]), FFTW_FORWARD, FFTW_MEASURE);
+    forward_zero = fftw_plan_dft_2d(grid.nx, grid.ny, reinterpret_cast<fftw_complex *>(&zero[0]),
+                                    reinterpret_cast<fftw_complex *>(&zero_k[0]), FFTW_FORWARD, FFTW_MEASURE);
+    forward_minus = fftw_plan_dft_2d(grid.nx, grid.ny, reinterpret_cast<fftw_complex *>(&minus[0]),
+                                     reinterpret_cast<fftw_complex *>(&minus_k[0]), FFTW_FORWARD, FFTW_MEASURE);
 
-    backward_plus = fftw_plan_dft_2d(grid.nx, grid.ny, reinterpret_cast<fftw_complex*>(&plus_k[0]),
-                                     reinterpret_cast<fftw_complex*>(&plus[0]), FFTW_BACKWARD, FFTW_MEASURE);
-    backward_zero = fftw_plan_dft_2d(grid.nx, grid.ny, reinterpret_cast<fftw_complex*>(&zero_k[0]),
-                                     reinterpret_cast<fftw_complex*>(&zero[0]), FFTW_BACKWARD, FFTW_MEASURE);
-    backward_minus = fftw_plan_dft_2d(grid.nx, grid.ny, reinterpret_cast<fftw_complex*>(&minus_k[0]),
-                                      reinterpret_cast<fftw_complex*>(&minus[0]), FFTW_BACKWARD, FFTW_MEASURE);
+    backward_plus = fftw_plan_dft_2d(grid.nx, grid.ny, reinterpret_cast<fftw_complex *>(&plus_k[0]),
+                                     reinterpret_cast<fftw_complex *>(&plus[0]), FFTW_BACKWARD, FFTW_MEASURE);
+    backward_zero = fftw_plan_dft_2d(grid.nx, grid.ny, reinterpret_cast<fftw_complex *>(&zero_k[0]),
+                                     reinterpret_cast<fftw_complex *>(&zero[0]), FFTW_BACKWARD, FFTW_MEASURE);
+    backward_minus = fftw_plan_dft_2d(grid.nx, grid.ny, reinterpret_cast<fftw_complex *>(&minus_k[0]),
+                                      reinterpret_cast<fftw_complex *>(&minus[0]), FFTW_BACKWARD, FFTW_MEASURE);
 }
 
 void Wavefunction::fft()
@@ -111,8 +111,23 @@ void Wavefunction::ifft()
 
     // Scale output
     double size = grid.nx * grid.ny;
-    std::transform(plus.begin(), plus.end(), plus.begin(), [&size](auto& c) { return c / size; });
-    std::transform(zero.begin(), zero.end(), zero.begin(), [&size](auto& c) { return c / size; });
-    std::transform(minus.begin(), minus.end(), minus.begin(), [&size](auto& c) { return c / size; });
+    std::transform(plus.begin(), plus.end(), plus.begin(), [&size](auto &c) { return c / size; });
+    std::transform(zero.begin(), zero.end(), zero.begin(), [&size](auto &c) { return c / size; });
+    std::transform(minus.begin(), minus.end(), minus.begin(), [&size](auto &c) { return c / size; });
 
+}
+
+double Wavefunction::atom_number()
+{
+    double atom_num;
+    for (int i = 0; i < grid.nx; ++i)
+    {
+        for (int j = 0; j < grid.ny; ++j)
+        {
+            atom_num += std::pow(abs(plus[j + i * grid.nx]), 2) +
+                        std::pow(abs(zero[j + i * grid.nx]), 2) +
+                        std::pow(abs(minus[j + i * grid.nx]), 2);
+        }
+    }
+    return atom_num;
 }

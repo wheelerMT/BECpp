@@ -61,7 +61,7 @@ public:
 
     doubleArray_t density();
 
-
+    double atom_number();
 };
 
 
