@@ -124,10 +124,66 @@ double Wavefunction::atom_number()
     {
         for (int j = 0; j < grid.ny; ++j)
         {
-            atom_num += std::pow(abs(plus[j + i * grid.nx]), 2) +
-                        std::pow(abs(zero[j + i * grid.nx]), 2) +
-                        std::pow(abs(minus[j + i * grid.nx]), 2);
+            atom_num += grid.dx * grid.dy * (std::pow(abs(plus[j + i * grid.nx]), 2) +
+                                             std::pow(abs(zero[j + i * grid.nx]), 2) +
+                                             std::pow(abs(minus[j + i * grid.nx]), 2));
         }
     }
     return atom_num;
+}
+
+void Wavefunction::update_component_atom_num()
+{
+    N_plus = 0.;
+    N_zero = 0.;
+    N_minus = 0.;
+
+    for (int i = 0; i < grid.nx; ++i)
+    {
+        for (int j = 0; j < grid.ny; ++j)
+        {
+            N_plus += grid.dx * grid.dy * std::pow(abs(plus[j + i * grid.nx]), 2);
+            N_zero += grid.dx * grid.dy * std::pow(abs(zero[j + i * grid.nx]), 2);
+            N_minus += grid.dx * grid.dy * std::pow(abs(minus[j + i * grid.nx]), 2);
+        }
+    }
+
+    N = N_plus + N_zero + N_minus;
+}
+
+double Wavefunction::component_atom_number(const std::string &component)
+{
+    double component_atom_num;
+
+    if (component == "plus")
+    {
+        for (int i = 0; i < grid.nx; ++i)
+        {
+            for (int j = 0; j < grid.ny; ++j)
+            {
+                component_atom_num += grid.dx * grid.dy * std::pow(abs(plus[j + i * grid.nx]), 2);
+            }
+        }
+
+    } else if (component == "zero")
+    {
+        for (int i = 0; i < grid.nx; ++i)
+        {
+            for (int j = 0; j < grid.ny; ++j)
+            {
+                component_atom_num += grid.dx * grid.dy * std::pow(abs(zero[j + i * grid.nx]), 2);
+            }
+        }
+
+    } else if (component == "minus")
+    {
+        for (int i = 0; i < grid.nx; ++i)
+        {
+            for (int j = 0; j < grid.ny; ++j)
+            {
+                component_atom_num += grid.dx * grid.dy * std::pow(abs(minus[j + i * grid.nx]), 2);
+            }
+        }
+    }
+    return component_atom_num;
 }

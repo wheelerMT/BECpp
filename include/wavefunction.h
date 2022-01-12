@@ -49,6 +49,12 @@ public:
     // Reference to grid object
     Grid &grid;
 
+    // Atom numbers
+    double N_plus{};
+    double N_zero{};
+    double N_minus{};
+    double N{};
+
     // Constructor
     Wavefunction(Grid &grid, const std::string &gs_phase);
 
@@ -62,6 +68,11 @@ public:
     doubleArray_t density();
 
     double atom_number();
+
+    double component_atom_number(const std::string &component);
+
+    void update_component_atom_num();
+
 };
 
 
