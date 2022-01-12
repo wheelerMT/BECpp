@@ -9,10 +9,42 @@
 #include "wavefunction.h"
 #include "data.h"
 
-constexpr std::complex<double> I{0, 1};
+constexpr std::complex<double> I{1, 0};
+
+void apply_TF_density(Wavefunction &psi, const Parameters &params)
+{
+    double tf_density;
+
+    double g = params.c0 + 4 * params.c2;
+    double r_tf = std::pow(8 * g / PI, 0.25);
+
+    for (int i = 0; i < psi.grid.nx; ++i)
+    {
+        for (int j = 0; j < psi.grid.ny; ++j)
+        {
+            double r2 = psi.grid.X[i][j] * psi.grid.X[i][j] + psi.grid.Y[i][j] * psi.grid.Y[i][j];
+
+            if (r2 < r_tf)
+            {
+                tf_density = 15 / (8 * PI * r_tf) * (1 - r2 / (r_tf * r_tf));
+
+            } else
+            {
+                tf_density = 0.;
+            }
+
+            psi.plus[j + i * psi.grid.nx] *= tf_density;
+            psi.zero[j + i * psi.grid.nx] *= tf_density;
+            psi.minus[j + i * psi.grid.nx] *= tf_density;
+        }
+    }
+
+    psi.update_component_atom_num();
+}
 
 void fourier_step(Wavefunction &psi, const Parameters &params)
 {
+#pragma omp parallel for collapse(2) shared(psi, params) default(none)
     for (int i = 0; i < psi.grid.nx; ++i)
     {
         for (int j = 0; j < psi.grid.ny; ++j)
@@ -24,10 +56,9 @@ void fourier_step(Wavefunction &psi, const Parameters &params)
     }
 }
 
-
 void interaction_step(Wavefunction &psi, const Parameters &params)
 {
-
+#pragma omp parallel for collapse(2) shared(psi, params) default(none)
     for (int i = 0; i < psi.grid.nx; ++i)
     {
         for (int j = 0; j < psi.grid.ny; ++j)
@@ -76,6 +107,23 @@ void interaction_step(Wavefunction &psi, const Parameters &params)
             psi.plus[j + i * psi.grid.nx] = new_psi_zero;
             psi.plus[j + i * psi.grid.nx] = new_psi_minus;
 
+        }
+    }
+}
+
+void renormalise_atom_num(Wavefunction &psi)
+{
+    double current_N_plus = psi.component_atom_number("plus");
+    double current_N_zero = psi.component_atom_number("zero");
+    double current_N_minus = psi.component_atom_number("minus");
+
+    for (int i = 0; i < psi.grid.nx; ++i)
+    {
+        for (int j = 0; j < psi.grid.ny; ++j)
+        {
+            psi.plus[j + i * psi.grid.nx] *= sqrt(psi.N_plus) / sqrt(current_N_plus);
+            psi.zero[j + i * psi.grid.nx] *= sqrt(psi.N_zero) / sqrt(current_N_zero);
+            psi.minus[j + i * psi.grid.nx] *= sqrt(psi.N_minus) / sqrt(current_N_minus);
         }
     }
 }
