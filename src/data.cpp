@@ -71,6 +71,9 @@ void DataManager::save_wavefunction_data(Wavefunction &psi)
     ds_zero.resize({psi.grid.nx * psi.grid.ny, save_index + 1});
     ds_minus.resize({psi.grid.nx * psi.grid.ny, save_index + 1});
 
+    // FFT so we update real-space arrays
+    psi.ifft();
+
     // Save new wavefunction data
     ds_plus.select({0, save_index}, {psi.grid.nx * psi.grid.ny, 1}).write(psi.plus);
     ds_zero.select({0, save_index}, {psi.grid.nx * psi.grid.ny, 1}).write(psi.zero);
