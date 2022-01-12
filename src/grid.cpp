@@ -95,6 +95,15 @@ void Grid::fftshift()
             }
         }
     }
+
+    // Update wavevector
+    for (int i = 0; i < nx; ++i)
+    {
+        for (int j = 0; j < ny; ++j)
+        {
+            K[i][j] = std::pow(Kx[i][j], 2) + std::pow(Ky[i][j], 2);
+        }
+    }
 }
 
 Grid::Grid(unsigned int nx, unsigned int ny, double dx, double dy)
