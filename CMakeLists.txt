@@ -4,7 +4,7 @@ project(BECpp)
 set(CMAKE_CXX_STANDARD 20)
 
 set(SOURCES src/main.cpp src/grid.cpp src/wavefunction.cpp src/data.cpp)
-set(INCLUDES include/constants.h include/grid.h include/wavefunction.h include/data.h include/evolution.h)
+set(INCLUDES include/constants.h include/grid.h include/wavefunction.h include/data.h include/evolution.h include/phase.h)
 
 find_package(OpenMP REQUIRED)
 
