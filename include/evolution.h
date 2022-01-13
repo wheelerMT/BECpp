@@ -49,9 +49,9 @@ void fourier_step(Wavefunction &psi, const Parameters &params)
     {
         for (int j = 0; j < psi.grid.ny; ++j)
         {
-            psi.plus_k[j + i * psi.grid.nx] *= exp(-0.25 * I * params.dt * psi.grid.K[i][j] + 2 * params.q);
+            psi.plus_k[j + i * psi.grid.nx] *= exp(-0.25 * I * params.dt * (psi.grid.K[i][j] + 2 * params.q));
             psi.zero_k[j + i * psi.grid.nx] *= exp(-0.25 * I * params.dt * psi.grid.K[i][j]);
-            psi.minus_k[j + i * psi.grid.nx] *= exp(-0.25 * I * params.dt * psi.grid.K[i][j] + 2 * params.q);
+            psi.minus_k[j + i * psi.grid.nx] *= exp(-0.25 * I * params.dt * (psi.grid.K[i][j] + 2 * params.q));
         }
     }
 }
@@ -104,8 +104,8 @@ void interaction_step(Wavefunction &psi, const Parameters &params)
 
             // Update wavefunction
             psi.plus[j + i * psi.grid.nx] = new_psi_plus;
-            psi.plus[j + i * psi.grid.nx] = new_psi_zero;
-            psi.plus[j + i * psi.grid.nx] = new_psi_minus;
+            psi.zero[j + i * psi.grid.nx] = new_psi_zero;
+            psi.minus[j + i * psi.grid.nx] = new_psi_minus;
 
         }
     }
