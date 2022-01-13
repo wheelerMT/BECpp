@@ -65,6 +65,8 @@ public:
     // Member functions
     void add_noise(std::string const &components, double mean, double stddev);
 
+    void apply_phase(const doubleArray_t &phase_profile);
+
     doubleArray_t density();
 
     double atom_number();

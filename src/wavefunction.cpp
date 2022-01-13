@@ -34,6 +34,8 @@ Wavefunction::Wavefunction(Grid &grid, const std::string &gs_phase) : grid{grid}
     // Populates wavefunction components
     generateFFTPlans();
     generateInitialState(gs_phase);
+
+    update_component_atom_num();
 }
 
 void Wavefunction::add_noise(const std::string &components, double mean, double stddev)
@@ -59,6 +61,8 @@ void Wavefunction::add_noise(const std::string &components, double mean, double 
             }
         }
     }
+
+    update_component_atom_num();
 }
 
 doubleArray_t Wavefunction::density()
@@ -186,4 +190,17 @@ double Wavefunction::component_atom_number(const std::string &component)
         }
     }
     return component_atom_num;
+}
+
+void Wavefunction::apply_phase(const doubleArray_t &phase_profile)
+{
+    for (int i = 0; i < grid.nx; ++i)
+    {
+        for (int j = 0; j < grid.ny; ++j)
+        {
+            plus[j + i * grid.nx] *= exp(std::complex<double>{0, 1} * phase_profile[i][j]);
+            zero[j + i * grid.nx] *= exp(std::complex<double>{0, 1} * phase_profile[i][j]);
+            minus[j + i * grid.nx] *= exp(std::complex<double>{0, 1} * phase_profile[i][j]);
+        }
+    }
 }
