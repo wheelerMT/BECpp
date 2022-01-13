@@ -6,7 +6,7 @@
 #include "grid.h"
 #include "constants.h"
 
-void Grid::constructGridParams()
+void Grid::construct_grid_params()
 {
     // Calculate k-space grid spacing
     dkx = PI / (nx / 2. * dx);
@@ -17,7 +17,7 @@ void Grid::constructGridParams()
     len_y = ny * dy;
 }
 
-void Grid::constructGrids()
+void Grid::construct_grids()
 {
     // Set grid sizes
     X.resize(nx, std::vector<double>(ny));
@@ -109,12 +109,12 @@ void Grid::fftshift()
 Grid::Grid(unsigned int nx, unsigned int ny, double dx, double dy)
         : nx{nx}, ny{ny}, dx{dx}, dy{dy}
 {
-    constructGridParams();
-    constructGrids();
+    construct_grid_params();
+    construct_grids();
 }
 
 Grid::Grid(const Grid &grid) : nx{grid.nx}, ny{grid.ny}, dx{grid.dx}, dy{grid.dy}
 {
-    constructGridParams();
-    constructGrids();
+    construct_grid_params();
+    construct_grids();
 }

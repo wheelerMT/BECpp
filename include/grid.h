@@ -14,9 +14,9 @@ class Grid
 {
 private:
     // Grid & parameter construction functions
-    void constructGridParams();
+    void construct_grid_params();
 
-    void constructGrids();
+    void construct_grids();
 
     void fftshift();
 
