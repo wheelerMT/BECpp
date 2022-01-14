@@ -9,7 +9,7 @@
 #include "wavefunction.h"
 #include "data.h"
 
-constexpr std::complex<double> I{1, 0};
+constexpr std::complex<double> I{0, 1};
 
 void apply_TF_density(Wavefunction &psi, const Parameters &params)
 {
