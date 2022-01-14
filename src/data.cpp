@@ -9,6 +9,13 @@ Parameters::Parameters(double c0, double c2, double p, double q, int nt, int nfr
 {
 }
 
+void Parameters::imaginary_time(const std::string &toggle)
+{
+    assert(toggle == "on" or toggle == "off"); // Check correct toggle string is passed
+    if (toggle == "on") dt *= std::complex<double>{0, -1};
+    else if (toggle == "off") dt /= std::complex<double>{0, -1};
+}
+
 DataManager::DataManager(const std::string &filename, const Parameters &params, const Grid &grid) :
         filename{filename},
         file{filename, HighFive::File::ReadWrite | HighFive::File::Create | HighFive::File::Truncate}
@@ -25,7 +32,7 @@ void DataManager::save_parameters(const Parameters &params, const Grid &grid)
     file.createDataSet("/parameters/c2", params.c2);
     file.createDataSet("/time/nt", params.nt);
     file.createDataSet("/time/nframe", params.nframe);
-    file.createDataSet("/time/dt", params.dt);
+    file.createDataSet("/time/dt", params.dt.real());
 
     // Save grid parameters to file
     file.createDataSet("/grid/nx", grid.nx);

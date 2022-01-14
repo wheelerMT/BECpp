@@ -72,7 +72,7 @@ void interaction_step(Wavefunction &psi, const Parameters &params)
             double F = sqrt(std::pow(abs(f_z), 2) + std::pow(abs(f_perp), 2));
 
             // Calculate trigonometric expressions
-            double C = std::cos(params.c2 * F * params.dt);
+            std::complex<double> C = std::cos(params.c2 * F * params.dt);
             std::complex<double> S{};
             if (F > 1e-8)
             {

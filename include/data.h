@@ -28,6 +28,8 @@ struct Parameters
     std::complex<double> dt;
     doubleArray_t V;
 
+    void imaginary_time(const std::string &toggle);
+
 };
 
 class DataManager
