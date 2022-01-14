@@ -25,7 +25,7 @@ struct Parameters
     double q;
     int nt;
     int nframe;
-    double dt;
+    std::complex<double> dt;
     doubleArray_t V;
 
 };
