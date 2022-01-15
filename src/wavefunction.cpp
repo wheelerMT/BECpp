@@ -204,3 +204,13 @@ void Wavefunction::apply_phase(const doubleArray_t &phase_profile)
         }
     }
 }
+
+void Wavefunction::destroy_fft_plans()
+{
+    fftw_destroy_plan(forward_plus);
+    fftw_destroy_plan(forward_zero);
+    fftw_destroy_plan(forward_minus);
+    fftw_destroy_plan(backward_plus);
+    fftw_destroy_plan(backward_zero);
+    fftw_destroy_plan(backward_minus);
+}

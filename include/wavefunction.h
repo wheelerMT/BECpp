@@ -61,6 +61,7 @@ public:
     // FFT functions
     void fft();
     void ifft();
+    void destroy_fft_plans();
 
     // Member functions
     void add_noise(std::string const &components, double mean, double stddev);
