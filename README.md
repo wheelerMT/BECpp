@@ -1,4 +1,4 @@
-<img src="https://github.com/wheelerMT/BECpp/blob/master/docs/vids/BECpp.gif" alt=""/>
+### <img src="https://github.com/wheelerMT/BECpp/blob/master/docs/vids/becpp.gif">
 
 ---
 
@@ -7,7 +7,7 @@ BEC++ is aiming to be a fast, adaptable Gross-Pitaevskii equation solver for Bos
 The project is very much a work in progress. 
 
 # <u> What can BEC++ do?</u>
-BEC++ provides solvers for the Gross-Pitaevskii equation using either single-threaded CPU, multi-threaded CPU, or GPU 
+BEC++ provides solvers for the Gross-Pitaevskii equation that are solved using either single-threaded CPU, multi-threaded CPU, or GPU 
 accelerated using CUDA.
 
 I plan to add support for
