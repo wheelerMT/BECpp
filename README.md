@@ -1,4 +1,4 @@
-![](https://github.com/wheelerMT/BECpp/blob/master/docs/vids/BECpp.gif)
+<img src="https://github.com/wheelerMT/BECpp/blob/master/docs/vids/BECpp.gif" alt=""/>
 
 ---
 
