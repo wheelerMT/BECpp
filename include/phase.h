@@ -17,8 +17,11 @@ inline double heaviside(double x)
     return (x > 0) ? 1 : ((x < 0) ? 0 : 1);
 }
 
-std::vector<std::tuple<double, double>> generate_positions(const int n_vort, const double threshold, const Grid &grid)
+std::vector<std::tuple<double, double>> generate_positions(const int n_vort, const double threshold, const Grid &grid,
+                                                           const int max_iter)
 {
+    std::cout << "Finding " << n_vort << " vortex positions...\n";
+
     std::vector<std::tuple<double, double>> positions;
     int iterations = 0;
 
@@ -46,18 +49,32 @@ std::vector<std::tuple<double, double>> generate_positions(const int n_vort, con
                 }
             }
         }
+
         if (!triggered)
         {
             positions.push_back(pos);
         }
+
+        // If iterations exceed the maximum, return the current position list and continue
+        if (iterations > max_iter)
+        {
+            std::cout << "WARNING: Max iterations exceeded, only found " << positions.size() << " suitable positions\n";
+            return positions;
+        }
     }
+
+    std::cout << "Found " << n_vort << " positions in " << iterations << " iterations\n";
 
     return positions;
 }
 
-doubleArray_t construct_phase(const int n_vort, const double threshold, const Grid &grid)
+doubleArray_t construct_phase(const int n_vort, const double threshold, const Grid &grid, const int max_iter = 10000)
 {
-    std::vector<std::tuple<double, double>> positions = generate_positions(n_vort, threshold, grid);
+    std::cout << "Commencing construction of phase:\n";
+
+    std::vector<std::tuple<double, double>> positions = generate_positions(n_vort, threshold, grid, max_iter);
+
+    std::cout << "Constructing phase profile array...\n";
 
     // Phase array
     doubleArray_t theta;
@@ -109,6 +126,8 @@ doubleArray_t construct_phase(const int n_vort, const double threshold, const Gr
         }
 
     }
+
+    std::cout << "Phase constructed!\n";
 
     return theta;
 }
