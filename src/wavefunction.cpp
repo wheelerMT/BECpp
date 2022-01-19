@@ -123,7 +123,7 @@ void Wavefunction::ifft()
 
 double Wavefunction::atom_number()
 {
-    double atom_num;
+    double atom_num = 0;
     for (int i = 0; i < grid.nx; ++i)
     {
         for (int j = 0; j < grid.ny; ++j)
@@ -157,7 +157,7 @@ void Wavefunction::update_component_atom_num()
 
 double Wavefunction::component_atom_number(const std::string &component)
 {
-    double component_atom_num;
+    double component_atom_num = 0;
 
     if (component == "plus")
     {
