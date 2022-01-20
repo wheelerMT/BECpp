@@ -33,9 +33,9 @@ void apply_TF_density(Wavefunction &psi, const Parameters &params)
                 tf_density = 0.;
             }
 
-            psi.plus[j + i * psi.grid.nx] *= tf_density;
-            psi.zero[j + i * psi.grid.nx] *= tf_density;
-            psi.minus[j + i * psi.grid.nx] *= tf_density;
+            psi.plus[j + i * psi.grid.ny] *= tf_density;
+            psi.zero[j + i * psi.grid.ny] *= tf_density;
+            psi.minus[j + i * psi.grid.ny] *= tf_density;
         }
     }
 
@@ -49,9 +49,9 @@ void fourier_step(Wavefunction &psi, const Parameters &params)
     {
         for (int j = 0; j < psi.grid.ny; ++j)
         {
-            psi.plus_k[j + i * psi.grid.nx] *= exp(-0.25 * I * params.dt * (psi.grid.K[i][j] + 2 * params.q));
-            psi.zero_k[j + i * psi.grid.nx] *= exp(-0.25 * I * params.dt * psi.grid.K[i][j]);
-            psi.minus_k[j + i * psi.grid.nx] *= exp(-0.25 * I * params.dt * (psi.grid.K[i][j] + 2 * params.q));
+            psi.plus_k[j + i * psi.grid.ny] *= exp(-0.25 * I * params.dt * (psi.grid.K[i][j] + 2 * params.q));
+            psi.zero_k[j + i * psi.grid.ny] *= exp(-0.25 * I * params.dt * psi.grid.K[i][j]);
+            psi.minus_k[j + i * psi.grid.ny] *= exp(-0.25 * I * params.dt * (psi.grid.K[i][j] + 2 * params.q));
         }
     }
 }
@@ -65,10 +65,10 @@ void interaction_step(Wavefunction &psi, const Parameters &params)
         {
             // Calculate spin vector elements
             std::complex<double> f_perp =
-                    sqrt(2.) * (std::conj(psi.plus[j + i * psi.grid.nx]) * psi.zero[j + i * psi.grid.nx]
-                                + std::conj(psi.zero[j + i * psi.grid.nx]) * psi.minus[j + i * psi.grid.nx]);
-            std::complex<double> f_z = std::pow(abs(psi.plus[j + i * psi.grid.nx]), 2) -
-                                       std::pow(abs(psi.minus[j + i * psi.grid.nx]), 2);
+                    sqrt(2.) * (std::conj(psi.plus[j + i * psi.grid.ny]) * psi.zero[j + i * psi.grid.ny]
+                                + std::conj(psi.zero[j + i * psi.grid.ny]) * psi.minus[j + i * psi.grid.ny]);
+            std::complex<double> f_z = std::pow(abs(psi.plus[j + i * psi.grid.ny]), 2) -
+                                       std::pow(abs(psi.minus[j + i * psi.grid.ny]), 2);
             double F = sqrt(std::pow(abs(f_z), 2) + std::pow(abs(f_perp), 2));
 
             // Calculate trigonometric expressions
@@ -80,32 +80,32 @@ void interaction_step(Wavefunction &psi, const Parameters &params)
             }
 
             // Calculate density
-            double n = std::pow(abs(psi.plus[j + i * psi.grid.nx]), 2) +
-                       std::pow(abs(psi.zero[j + i * psi.grid.nx]), 2) +
-                       std::pow(abs(psi.minus[j + i * psi.grid.nx]), 2);
+            double n = std::pow(abs(psi.plus[j + i * psi.grid.ny]), 2) +
+                       std::pow(abs(psi.zero[j + i * psi.grid.ny]), 2) +
+                       std::pow(abs(psi.minus[j + i * psi.grid.ny]), 2);
 
             // Solve interaction part of flow
-            std::complex<double> new_psi_plus = (C * psi.plus[j + i * psi.grid.nx] -
-                                                 S * (f_z * psi.plus[j + i * psi.grid.nx]
-                                                      + std::conj(f_perp) / sqrt(2.) * psi.zero[j + i * psi.grid.nx]))
+            std::complex<double> new_psi_plus = (C * psi.plus[j + i * psi.grid.ny] -
+                                                 S * (f_z * psi.plus[j + i * psi.grid.ny]
+                                                      + std::conj(f_perp) / sqrt(2.) * psi.zero[j + i * psi.grid.ny]))
                                                 * exp(-I * params.dt * (params.V[i][j] - params.p + params.c0 * n));
 
             // Solve interaction part of flow
-            std::complex<double> new_psi_zero = (C * psi.zero[j + i * psi.grid.nx] -
-                                                 S / sqrt(2.) * (f_perp * psi.plus[j + i * psi.grid.nx]
-                                                                 + std::conj(f_perp) * psi.minus[j + i * psi.grid.nx]))
+            std::complex<double> new_psi_zero = (C * psi.zero[j + i * psi.grid.ny] -
+                                                 S / sqrt(2.) * (f_perp * psi.plus[j + i * psi.grid.ny]
+                                                                 + std::conj(f_perp) * psi.minus[j + i * psi.grid.ny]))
                                                 * exp(-I * params.dt * (params.V[i][j] + params.c0 * n));
 
             // Solve interaction part of flow
-            std::complex<double> new_psi_minus = (C * psi.minus[j + i * psi.grid.nx] -
-                                                  S * (f_perp / sqrt(2.) * psi.zero[j + i * psi.grid.nx]
-                                                       - f_z * psi.minus[j + i * psi.grid.nx]))
+            std::complex<double> new_psi_minus = (C * psi.minus[j + i * psi.grid.ny] -
+                                                  S * (f_perp / sqrt(2.) * psi.zero[j + i * psi.grid.ny]
+                                                       - f_z * psi.minus[j + i * psi.grid.ny]))
                                                  * exp(-I * params.dt * (params.V[i][j] + params.p + params.c0 * n));
 
             // Update wavefunction
-            psi.plus[j + i * psi.grid.nx] = new_psi_plus;
-            psi.zero[j + i * psi.grid.nx] = new_psi_zero;
-            psi.minus[j + i * psi.grid.nx] = new_psi_minus;
+            psi.plus[j + i * psi.grid.ny] = new_psi_plus;
+            psi.zero[j + i * psi.grid.ny] = new_psi_zero;
+            psi.minus[j + i * psi.grid.ny] = new_psi_minus;
 
         }
     }
@@ -121,9 +121,9 @@ void renormalise_atom_num(Wavefunction &psi)
     {
         for (int j = 0; j < psi.grid.ny; ++j)
         {
-            psi.plus[j + i * psi.grid.nx] *= sqrt(psi.N_plus) / sqrt(current_N_plus);
-            psi.zero[j + i * psi.grid.nx] *= sqrt(psi.N_zero) / sqrt(current_N_zero);
-            psi.minus[j + i * psi.grid.nx] *= sqrt(psi.N_minus) / sqrt(current_N_minus);
+            psi.plus[j + i * psi.grid.ny] *= sqrt(psi.N_plus) / sqrt(current_N_plus);
+            psi.zero[j + i * psi.grid.ny] *= sqrt(psi.N_zero) / sqrt(current_N_zero);
+            psi.minus[j + i * psi.grid.ny] *= sqrt(psi.N_minus) / sqrt(current_N_minus);
         }
     }
 }

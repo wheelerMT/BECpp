@@ -74,9 +74,9 @@ doubleArray_t Wavefunction::density()
     {
         for (int j = 0; j < grid.ny; j++)
         {
-            density[i][j] += (std::pow(std::abs(plus[j + grid.nx * i]), 2)
-                              + std::pow(std::abs(zero[j + grid.nx * i]), 2)
-                              + std::pow(std::abs(minus[j + grid.nx * i]), 2));
+            density[i][j] += (std::pow(std::abs(plus[j + i * grid.ny]), 2)
+                              + std::pow(std::abs(zero[j + i * grid.ny]), 2)
+                              + std::pow(std::abs(minus[j + i * grid.ny]), 2));
         }
     }
     return density;
@@ -128,9 +128,9 @@ double Wavefunction::atom_number()
     {
         for (int j = 0; j < grid.ny; ++j)
         {
-            atom_num += grid.dx * grid.dy * (std::pow(abs(plus[j + i * grid.nx]), 2) +
-                                             std::pow(abs(zero[j + i * grid.nx]), 2) +
-                                             std::pow(abs(minus[j + i * grid.nx]), 2));
+            atom_num += grid.dx * grid.dy * (std::pow(abs(plus[j + i * grid.ny]), 2) +
+                                             std::pow(abs(zero[j + i * grid.ny]), 2) +
+                                             std::pow(abs(minus[j + i * grid.ny]), 2));
         }
     }
     return atom_num;
@@ -146,9 +146,9 @@ void Wavefunction::update_component_atom_num()
     {
         for (int j = 0; j < grid.ny; ++j)
         {
-            N_plus += grid.dx * grid.dy * std::pow(abs(plus[j + i * grid.nx]), 2);
-            N_zero += grid.dx * grid.dy * std::pow(abs(zero[j + i * grid.nx]), 2);
-            N_minus += grid.dx * grid.dy * std::pow(abs(minus[j + i * grid.nx]), 2);
+            N_plus += grid.dx * grid.dy * std::pow(abs(plus[j + i * grid.ny]), 2);
+            N_zero += grid.dx * grid.dy * std::pow(abs(zero[j + i * grid.ny]), 2);
+            N_minus += grid.dx * grid.dy * std::pow(abs(minus[j + i * grid.ny]), 2);
         }
     }
 
@@ -165,7 +165,7 @@ double Wavefunction::component_atom_number(const std::string &component)
         {
             for (int j = 0; j < grid.ny; ++j)
             {
-                component_atom_num += grid.dx * grid.dy * std::pow(abs(plus[j + i * grid.nx]), 2);
+                component_atom_num += grid.dx * grid.dy * std::pow(abs(plus[j + i * grid.ny]), 2);
             }
         }
 
@@ -175,7 +175,7 @@ double Wavefunction::component_atom_number(const std::string &component)
         {
             for (int j = 0; j < grid.ny; ++j)
             {
-                component_atom_num += grid.dx * grid.dy * std::pow(abs(zero[j + i * grid.nx]), 2);
+                component_atom_num += grid.dx * grid.dy * std::pow(abs(zero[j + i * grid.ny]), 2);
             }
         }
 
@@ -185,7 +185,7 @@ double Wavefunction::component_atom_number(const std::string &component)
         {
             for (int j = 0; j < grid.ny; ++j)
             {
-                component_atom_num += grid.dx * grid.dy * std::pow(abs(minus[j + i * grid.nx]), 2);
+                component_atom_num += grid.dx * grid.dy * std::pow(abs(minus[j + i * grid.ny]), 2);
             }
         }
     }
@@ -198,9 +198,9 @@ void Wavefunction::apply_phase(const doubleArray_t &phase_profile)
     {
         for (int j = 0; j < grid.ny; ++j)
         {
-            plus[j + i * grid.nx] *= exp(std::complex<double>{0, 1} * phase_profile[i][j]);
-            zero[j + i * grid.nx] *= exp(std::complex<double>{0, 1} * phase_profile[i][j]);
-            minus[j + i * grid.nx] *= exp(std::complex<double>{0, 1} * phase_profile[i][j]);
+            plus[j + i * grid.ny] *= exp(std::complex<double>{0, 1} * phase_profile[i][j]);
+            zero[j + i * grid.ny] *= exp(std::complex<double>{0, 1} * phase_profile[i][j]);
+            minus[j + i * grid.ny] *= exp(std::complex<double>{0, 1} * phase_profile[i][j]);
         }
     }
 }
