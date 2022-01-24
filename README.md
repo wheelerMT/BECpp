@@ -21,4 +21,4 @@ The codebase will also contain a myriad of useful functions for generating initi
 support vortices.
 
 # <u> Current development </u>
-I am currently developing the CUDA-accelerated evolution functions for a 2D spin-1 system.
+I am currently developing the 1D version of the codebase.
