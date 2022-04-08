@@ -3,6 +3,7 @@
 //
 
 #include <cmath>
+#include <algorithm>
 #include "grid.h"
 #include "constants.h"
 
@@ -117,4 +118,50 @@ Grid2D::Grid2D(const Grid2D &grid) : nx{grid.nx}, ny{grid.ny}, dx{grid.dx}, dy{g
 {
     construct_grid_params();
     construct_grids();
+}
+
+void Grid1D::construct_grid_params()
+{
+    // Calculate k-space grid spacing
+    dkx = PI / (nx / 2. * dx);
+
+    // Sets length of side of box
+    len_x = nx * dx;
+}
+
+void Grid1D::construct_grids()
+{
+    // Set grid sizes
+    X.resize(nx);
+    Kx.resize(nx);
+    K.resize(nx);
+
+    // Construct grids
+    for (int i = 0; i < nx; ++i)
+    {
+        X[i] = (i - nx / 2.) * dx;
+        Kx[i] = (i - nx / 2.) * dkx;
+        K[i] = std::pow(Kx[i], 2);
+    }
+
+    // Shift the k-space grids, so they are in the right order
+    fftshift();
+}
+
+Grid1D::Grid1D(unsigned int nx, double dx) : nx{nx}, dx{dx}
+{
+    construct_grid_params();
+    construct_grids();
+}
+
+Grid1D::Grid1D(const Grid1D &grid) : nx{grid.nx}, dx{grid.dx}
+{
+    construct_grid_params();
+    construct_grids();
+}
+
+void Grid1D::fftshift()
+{
+    std::rotate(Kx.begin(), Kx.begin() + nx / 2, Kx.end());
+    K = Kx;
 }

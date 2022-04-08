@@ -10,6 +10,42 @@
 
 using doubleArray_t = std::vector<std::vector<double>>;
 
+class Grid1D
+{
+private:
+    // Grid2D & parameter construction functions
+    void construct_grid_params();
+
+    void construct_grids();
+
+    void fftshift();
+
+public:
+    // Grid1D points
+    const unsigned int nx{};
+
+    // Grid1D spacing
+    double dx{};
+    double dkx{};
+
+    // Grid1D lengths
+    double len_x{};
+    double len_y{};
+
+    // Grids
+    std::vector<double> X{};
+    std::vector<double> Kx{};
+    std::vector<double> K{};
+
+    // Constructors
+    Grid1D(unsigned int nx, double dx);
+
+    Grid1D(const Grid1D &grid);  // Copy constructor
+
+    // Declare wavefunction class a friend
+    friend class Wavefunction;
+};
+
 class Grid2D
 {
 private:
