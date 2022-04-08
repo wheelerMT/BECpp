@@ -9,6 +9,11 @@ Parameters::Parameters(double c0, double c2, double p, double q, int nt, int nfr
 {
 }
 
+Parameters::Parameters(double c0, double c2, double p, double q, int nt, int nframe, double dt, std::vector<double> &V)
+        : c0{c0}, c2{c2}, p{p}, q{q}, nt{nt}, nframe{nframe}, dt{dt, 0}, V{V}
+{
+}
+
 void Parameters::imaginary_time(const std::string &toggle)
 {
     assert(toggle == "on" or toggle == "off"); // Check correct toggle string is passed

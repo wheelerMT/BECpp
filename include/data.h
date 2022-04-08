@@ -18,6 +18,7 @@ using doubleArray_t = std::vector<std::vector<double>>;
 struct Parameters
 {
     Parameters(double c0, double c2, double p, double q, int nt, int nframe, double dt, doubleArray_t &V);
+    Parameters(double c0, double c2, double p, double q, int nt, int nframe, double dt, std::vector<double> &V);
 
     double c0;
     double c2;
