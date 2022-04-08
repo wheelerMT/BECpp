@@ -11,7 +11,7 @@
 
 constexpr std::complex<double> I{0, 1};
 
-void apply_TF_density(Wavefunction &psi, const Parameters &params)
+void apply_TF_density(Wavefunction2D &psi, const Parameters &params)
 {
     double tf_density;
 
@@ -42,9 +42,9 @@ void apply_TF_density(Wavefunction &psi, const Parameters &params)
     psi.update_component_atom_num();
 }
 
-void fourier_step(Wavefunction &psi, const Parameters &params)
+void fourier_step(Wavefunction2D &psi, const Parameters &params)
 {
-#pragma omp parallel for collapse(2) shared(psi, params) default(none)
+#pragma omp parallel for collapse(2) shared(psi, params, I) default(none)
     for (int i = 0; i < psi.grid.nx; ++i)
     {
         for (int j = 0; j < psi.grid.ny; ++j)
@@ -56,9 +56,9 @@ void fourier_step(Wavefunction &psi, const Parameters &params)
     }
 }
 
-void interaction_step(Wavefunction &psi, const Parameters &params)
+void interaction_step(Wavefunction2D &psi, const Parameters &params)
 {
-#pragma omp parallel for collapse(2) shared(psi, params) default(none)
+#pragma omp parallel for collapse(2) shared(psi, params, I) default(none)
     for (int i = 0; i < psi.grid.nx; ++i)
     {
         for (int j = 0; j < psi.grid.ny; ++j)
@@ -111,7 +111,7 @@ void interaction_step(Wavefunction &psi, const Parameters &params)
     }
 }
 
-void renormalise_atom_num(Wavefunction &psi)
+void renormalise_atom_num(Wavefunction2D &psi)
 {
     double current_N_plus = psi.component_atom_number("plus");
     double current_N_zero = psi.component_atom_number("zero");

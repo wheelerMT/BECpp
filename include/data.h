@@ -37,15 +37,15 @@ class DataManager
 private:
     unsigned int save_index{0};
 
-    void save_parameters(const Parameters &params, const Grid &grid);
+    void save_parameters(const Parameters &params, const Grid2D &grid);
 
-    void generate_wfn_datasets(const Grid &grid);
+    void generate_wfn_datasets(const Grid2D &grid);
 
 public:
     // Constructor
-    DataManager(const std::string &filename, const Parameters &params, const Grid &grid);
+    DataManager(const std::string &filename, const Parameters &params, const Grid2D &grid);
 
-    void save_wavefunction_data(Wavefunction &psi);
+    void save_wavefunction_data(Wavefunction2D &psi);
 
     std::string filename;
     HighFive::File file;

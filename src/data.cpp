@@ -16,7 +16,7 @@ void Parameters::imaginary_time(const std::string &toggle)
     else if (toggle == "off") dt /= std::complex<double>{0, -1};
 }
 
-DataManager::DataManager(const std::string &filename, const Parameters &params, const Grid &grid) :
+DataManager::DataManager(const std::string &filename, const Parameters &params, const Grid2D &grid) :
         filename{filename},
         file{filename, HighFive::File::ReadWrite | HighFive::File::Create | HighFive::File::Truncate}
 {
@@ -25,7 +25,7 @@ DataManager::DataManager(const std::string &filename, const Parameters &params, 
 
 }
 
-void DataManager::save_parameters(const Parameters &params, const Grid &grid)
+void DataManager::save_parameters(const Parameters &params, const Grid2D &grid)
 {
     // Save condensate and time parameters to file
     file.createDataSet("/parameters/c0", params.c0);
@@ -42,7 +42,7 @@ void DataManager::save_parameters(const Parameters &params, const Grid &grid)
 
 }
 
-void DataManager::generate_wfn_datasets(const Grid &grid)
+void DataManager::generate_wfn_datasets(const Grid2D &grid)
 {
     // Define dataspaces with arbitrary length of last dimension
     HighFive::DataSpace ds_plus = HighFive::DataSpace({grid.nx * grid.ny, 1},
@@ -66,7 +66,7 @@ void DataManager::generate_wfn_datasets(const Grid &grid)
 
 }
 
-void DataManager::save_wavefunction_data(Wavefunction &psi)
+void DataManager::save_wavefunction_data(Wavefunction2D &psi)
 {
     // Load in datasets
     HighFive::DataSet ds_plus = file.getDataSet("/wavefunction/psi_plus");

@@ -6,7 +6,7 @@
 #include "grid.h"
 #include "constants.h"
 
-void Grid::construct_grid_params()
+void Grid2D::construct_grid_params()
 {
     // Calculate k-space grid spacing
     dkx = PI / (nx / 2. * dx);
@@ -17,7 +17,7 @@ void Grid::construct_grid_params()
     len_y = ny * dy;
 }
 
-void Grid::construct_grids()
+void Grid2D::construct_grids()
 {
     // Set grid sizes
     X.resize(nx, std::vector<double>(ny));
@@ -43,7 +43,7 @@ void Grid::construct_grids()
     fftshift();
 }
 
-void Grid::fftshift()
+void Grid2D::fftshift()
 {
     /*
         Shifts the zero-frequency component to the center
@@ -106,14 +106,14 @@ void Grid::fftshift()
     }
 }
 
-Grid::Grid(unsigned int nx, unsigned int ny, double dx, double dy)
+Grid2D::Grid2D(unsigned int nx, unsigned int ny, double dx, double dy)
         : nx{nx}, ny{ny}, dx{dx}, dy{dy}
 {
     construct_grid_params();
     construct_grids();
 }
 
-Grid::Grid(const Grid &grid) : nx{grid.nx}, ny{grid.ny}, dx{grid.dx}, dy{grid.dy}
+Grid2D::Grid2D(const Grid2D &grid) : nx{grid.nx}, ny{grid.ny}, dx{grid.dx}, dy{grid.dy}
 {
     construct_grid_params();
     construct_grids();

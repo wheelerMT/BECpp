@@ -21,7 +21,7 @@ using complexVector_t = std::vector<std::complex<double>>;
 using complexArray_t = std::vector<complexVector_t>;
 using doubleArray_t = std::vector<std::vector<double>>;
 
-class Wavefunction
+class Wavefunction2D
 {
 private:
     void generateInitialState(const std::string &gs_phase);
@@ -36,18 +36,18 @@ private:
     fftw_plan backward_minus{};
 
 public:
-    // Wavefunction components arrays
+    // Wavefunction2D components arrays
     complexVector_t plus{};
     complexVector_t zero{};
     complexVector_t minus{};
 
-    // Wavefunction k-space arrays
+    // Wavefunction2D k-space arrays
     complexVector_t plus_k{};
     complexVector_t zero_k{};
     complexVector_t minus_k{};
 
     // Reference to grid object
-    Grid &grid;
+    Grid2D &grid;
 
     // Atom numbers
     double N_plus{};
@@ -56,7 +56,7 @@ public:
     double N{};
 
     // Constructor
-    Wavefunction(Grid &grid, const std::string &gs_phase);
+    Wavefunction2D(Grid2D &grid, const std::string &gs_phase);
 
     // FFT functions
     void fft();

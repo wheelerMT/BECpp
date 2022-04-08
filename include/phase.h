@@ -5,19 +5,21 @@
 #ifndef BECPP_PHASE_H
 #define BECPP_PHASE_H
 
+#include <iostream>
 #include <tuple>
 #include <vector>
 #include <random>
 #include <chrono>
 #include <cmath>
 #include "grid.h"
+#include "constants.h"
 
 inline double heaviside(double x)
 {
     return (x > 0) ? 1 : ((x < 0) ? 0 : 1);
 }
 
-std::vector<std::tuple<double, double>> generate_positions(const int n_vort, const double threshold, const Grid &grid,
+std::vector<std::tuple<double, double>> generate_positions(const int n_vort, const double threshold, const Grid2D &grid,
                                                            const int max_iter)
 {
     std::cout << "Finding " << n_vort << " vortex positions...\n";
@@ -68,7 +70,7 @@ std::vector<std::tuple<double, double>> generate_positions(const int n_vort, con
     return positions;
 }
 
-doubleArray_t construct_phase(const int n_vort, const double threshold, const Grid &grid, const int max_iter = 10000)
+doubleArray_t construct_phase(const int n_vort, const double threshold, const Grid2D &grid, const int max_iter = 10000)
 {
     std::cout << "Commencing construction of phase:\n";
 

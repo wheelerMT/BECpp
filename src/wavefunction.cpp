@@ -4,7 +4,7 @@
 
 #include "wavefunction.h"
 
-void Wavefunction::generateInitialState(const std::string &gs_phase)
+void Wavefunction2D::generateInitialState(const std::string &gs_phase)
 {
     if (gs_phase == "polar")
     {
@@ -21,7 +21,7 @@ void Wavefunction::generateInitialState(const std::string &gs_phase)
     }
 }
 
-Wavefunction::Wavefunction(Grid &grid, const std::string &gs_phase) : grid{grid}
+Wavefunction2D::Wavefunction2D(Grid2D &grid, const std::string &gs_phase) : grid{grid}
 {
     // Size arrays
     plus.resize(grid.nx * grid.ny);
@@ -38,7 +38,7 @@ Wavefunction::Wavefunction(Grid &grid, const std::string &gs_phase) : grid{grid}
     update_component_atom_num();
 }
 
-void Wavefunction::add_noise(const std::string &components, double mean, double stddev)
+void Wavefunction2D::add_noise(const std::string &components, double mean, double stddev)
 {
     // Construct random generator
     unsigned seed1 = std::chrono::system_clock::now().time_since_epoch().count();
@@ -65,7 +65,7 @@ void Wavefunction::add_noise(const std::string &components, double mean, double 
     update_component_atom_num();
 }
 
-doubleArray_t Wavefunction::density()
+doubleArray_t Wavefunction2D::density()
 {
     doubleArray_t density{};
     density.resize(grid.nx, std::vector<double>(grid.ny));
@@ -82,7 +82,7 @@ doubleArray_t Wavefunction::density()
     return density;
 }
 
-void Wavefunction::generateFFTPlans()
+void Wavefunction2D::generateFFTPlans()
 {
 
     forward_plus = fftw_plan_dft_2d(grid.nx, grid.ny, reinterpret_cast<fftw_complex *>(&plus[0]),
@@ -100,14 +100,14 @@ void Wavefunction::generateFFTPlans()
                                       reinterpret_cast<fftw_complex *>(&minus[0]), FFTW_BACKWARD, FFTW_MEASURE);
 }
 
-void Wavefunction::fft()
+void Wavefunction2D::fft()
 {
     fftw_execute(forward_plus);
     fftw_execute(forward_zero);
     fftw_execute(forward_minus);
 }
 
-void Wavefunction::ifft()
+void Wavefunction2D::ifft()
 {
     fftw_execute(backward_plus);
     fftw_execute(backward_zero);
@@ -121,7 +121,7 @@ void Wavefunction::ifft()
 
 }
 
-double Wavefunction::atom_number()
+double Wavefunction2D::atom_number()
 {
     double atom_num = 0;
     for (int i = 0; i < grid.nx; ++i)
@@ -136,7 +136,7 @@ double Wavefunction::atom_number()
     return atom_num;
 }
 
-void Wavefunction::update_component_atom_num()
+void Wavefunction2D::update_component_atom_num()
 {
     N_plus = 0.;
     N_zero = 0.;
@@ -155,7 +155,7 @@ void Wavefunction::update_component_atom_num()
     N = N_plus + N_zero + N_minus;
 }
 
-double Wavefunction::component_atom_number(const std::string &component)
+double Wavefunction2D::component_atom_number(const std::string &component)
 {
     double component_atom_num = 0;
 
@@ -192,7 +192,7 @@ double Wavefunction::component_atom_number(const std::string &component)
     return component_atom_num;
 }
 
-void Wavefunction::apply_phase(const doubleArray_t &phase_profile)
+void Wavefunction2D::apply_phase(const doubleArray_t &phase_profile)
 {
     for (int i = 0; i < grid.nx; ++i)
     {
@@ -205,7 +205,7 @@ void Wavefunction::apply_phase(const doubleArray_t &phase_profile)
     }
 }
 
-void Wavefunction::destroy_fft_plans()
+void Wavefunction2D::destroy_fft_plans()
 {
     fftw_destroy_plan(forward_plus);
     fftw_destroy_plan(forward_zero);
