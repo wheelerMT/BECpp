@@ -56,9 +56,34 @@ void fourier_step(Wavefunction2D &psi, const Parameters &params)
     }
 }
 
-void interaction_step(Wavefunction2D &psi, const Parameters &params)
+void fourier_step(Wavefunction1D &psi, const Parameters &params)
 {
-#pragma omp parallel for collapse(2) shared(psi, params, I) default(none)
+#pragma omp parallel for shared(psi, params, I) default(none)
+    for (int i = 0; i < psi.grid.nx; ++i)
+    {
+        psi.plus_k[i] *= exp(-0.25 * I * params.dt * (psi.grid.K[i] + 2 * params.q));
+        psi.zero_k[i] *= exp(-0.25 * I * params.dt * psi.grid.K[i]);
+        psi.minus_k[i] *= exp(-0.25 * I * params.dt * (psi.grid.K[i] + 2 * params.q));
+
+    }
+}
+
+void fourier_step_KZ(Wavefunction1D &psi, const Parameters &params, int tau_q)
+{
+#pragma omp parallel for shared(psi, params, I, tau_q) default(none)
+    for (int i = 0; i < psi.grid.nx; ++i)
+    {
+        psi.plus_k[i] *= exp(-0.25 * I * params.dt *
+                             (psi.grid.K[i] + 2 * abs(params.c2) * (params.q - params.dt.real() / (2 * tau_q))));
+        psi.zero_k[i] *= exp(-0.25 * I * params.dt * psi.grid.K[i]);
+        psi.minus_k[i] *= exp(-0.25 * I * params.dt *
+                              (psi.grid.K[i] + 2 * abs(params.c2) * (params.q - params.dt.real() / (2 * tau_q))));
+    }
+}
+
+void interaction_step(Wavefunction2D &psi, const Parameters &params, const doubleArray_t &V)
+{
+#pragma omp parallel for collapse(2) shared(psi, params, I, V) default(none)
     for (int i = 0; i < psi.grid.nx; ++i)
     {
         for (int j = 0; j < psi.grid.ny; ++j)
@@ -76,7 +101,7 @@ void interaction_step(Wavefunction2D &psi, const Parameters &params)
             std::complex<double> S{};
             if (F > 1e-8)
             {
-                S = I * std::sin(params.c2 * F * params.dt);
+                S = I * std::sin(params.c2 * F * params.dt) / F;
             }
 
             // Calculate density
@@ -88,19 +113,19 @@ void interaction_step(Wavefunction2D &psi, const Parameters &params)
             std::complex<double> new_psi_plus = (C * psi.plus[j + i * psi.grid.ny] -
                                                  S * (f_z * psi.plus[j + i * psi.grid.ny]
                                                       + std::conj(f_perp) / sqrt(2.) * psi.zero[j + i * psi.grid.ny]))
-                                                * exp(-I * params.dt * (params.V[i][j] - params.p + params.c0 * n));
+                                                * exp(-I * params.dt * (V[i][j] - params.p + params.c0 * n));
 
             // Solve interaction part of flow
             std::complex<double> new_psi_zero = (C * psi.zero[j + i * psi.grid.ny] -
                                                  S / sqrt(2.) * (f_perp * psi.plus[j + i * psi.grid.ny]
                                                                  + std::conj(f_perp) * psi.minus[j + i * psi.grid.ny]))
-                                                * exp(-I * params.dt * (params.V[i][j] + params.c0 * n));
+                                                * exp(-I * params.dt * (V[i][j] + params.c0 * n));
 
             // Solve interaction part of flow
             std::complex<double> new_psi_minus = (C * psi.minus[j + i * psi.grid.ny] -
                                                   S * (f_perp / sqrt(2.) * psi.zero[j + i * psi.grid.ny]
                                                        - f_z * psi.minus[j + i * psi.grid.ny]))
-                                                 * exp(-I * params.dt * (params.V[i][j] + params.p + params.c0 * n));
+                                                 * exp(-I * params.dt * (V[i][j] + params.p + params.c0 * n));
 
             // Update wavefunction
             psi.plus[j + i * psi.grid.ny] = new_psi_plus;
@@ -108,6 +133,53 @@ void interaction_step(Wavefunction2D &psi, const Parameters &params)
             psi.minus[j + i * psi.grid.ny] = new_psi_minus;
 
         }
+    }
+}
+
+void interaction_step(Wavefunction1D &psi, const Parameters &params, const std::vector<double> &V)
+{
+#pragma omp parallel for shared(psi, params, I, V) default(none)
+    for (int i = 0; i < psi.grid.nx; ++i)
+    {
+        // Calculate spin vector elements
+        std::complex<double> f_perp =
+                sqrt(2.) * (std::conj(psi.plus[i]) * psi.zero[i] + std::conj(psi.zero[i]) * psi.minus[i]);
+        std::complex<double> f_z = std::pow(abs(psi.plus[i]), 2) - std::pow(abs(psi.minus[i]), 2);
+        double F = sqrt(std::pow(abs(f_z), 2) + std::pow(abs(f_perp), 2));
+
+        // Calculate trigonometric expressions
+        std::complex<double> C = std::cos(params.c2 * F * params.dt);
+        std::complex<double> S{};
+        if (F > 1e-8)
+        {
+            S = I * std::sin(params.c2 * F * params.dt) / F;
+        }
+
+        // Calculate density
+        double n = std::pow(abs(psi.plus[i]), 2) +
+                   std::pow(abs(psi.zero[i]), 2) +
+                   std::pow(abs(psi.minus[i]), 2);
+
+        // Solve interaction part of flow
+        std::complex<double> new_psi_plus = (C * psi.plus[i] -
+                                             S * (f_z * psi.plus[i] + std::conj(f_perp) / sqrt(2.) * psi.zero[i]))
+                                            * exp(-I * params.dt * (V[i] - params.p + params.c0 * n));
+
+        // Solve interaction part of flow
+        std::complex<double> new_psi_zero = (C * psi.zero[i] -
+                                             S / sqrt(2.) * (f_perp * psi.plus[i]
+                                                             + std::conj(f_perp) * psi.minus[i]))
+                                            * exp(-I * params.dt * (V[i] + params.c0 * n));
+
+        // Solve interaction part of flow
+        std::complex<double> new_psi_minus = (C * psi.minus[i] - S * (f_perp / sqrt(2.) * psi.zero[i]
+                                                                      - f_z * psi.minus[i])) *
+                                             exp(-I * params.dt * (V[i] + params.p + params.c0 * n));
+
+        // Update wavefunction
+        psi.plus[i] = new_psi_plus;
+        psi.zero[i] = new_psi_zero;
+        psi.minus[i] = new_psi_minus;
     }
 }
 
@@ -125,6 +197,20 @@ void renormalise_atom_num(Wavefunction2D &psi)
             psi.zero[j + i * psi.grid.ny] *= sqrt(psi.N_zero) / sqrt(current_N_zero);
             psi.minus[j + i * psi.grid.ny] *= sqrt(psi.N_minus) / sqrt(current_N_minus);
         }
+    }
+}
+
+void renormalise_atom_num(Wavefunction1D &psi)
+{
+    double current_N_plus = psi.component_atom_number("plus");
+    double current_N_zero = psi.component_atom_number("zero");
+    double current_N_minus = psi.component_atom_number("minus");
+
+    for (int i = 0; i < psi.grid.nx; ++i)
+    {
+        psi.plus[i] *= sqrt(psi.N_plus) / sqrt(current_N_plus);
+        psi.zero[i] *= sqrt(psi.N_zero) / sqrt(current_N_zero);
+        psi.minus[i] *= sqrt(psi.N_minus) / sqrt(current_N_minus);
     }
 }
 
