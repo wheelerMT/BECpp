@@ -12,7 +12,7 @@ add_executable(${PROJECT_NAME} ${SOURCES} ${INCLUDES})
 
 target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/include/
         ${PROJECT_SOURCE_DIR}/lib/fftw ${PROJECT_SOURCE_DIR}/lib/HighFive/include
-        ${PROJECT_SOURCE_DIR}/lib/HDF5/1.13.0/include)
+        ${PROJECT_SOURCE_DIR}/lib/HDF5/1.12.1/include)
 target_link_directories(${PROJECT_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/lib/fftw
-        ${PROJECT_SOURCE_DIR}/lib/HDF5/1.13.0/lib)
+        ${PROJECT_SOURCE_DIR}/lib/HDF5/1.12.1/lib)
 target_link_libraries(${PROJECT_NAME} libfftw3-3 hdf5 OpenMP::OpenMP_CXX)
