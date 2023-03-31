@@ -1,4 +1,6 @@
-### <img src="https://github.com/wheelerMT/BECpp/blob/master/docs/vids/becpp.gif">
+<p align="center"><img src="docs/BEC++.png" alt="logo" ></p>
+
+<h4 align="center">A parallelised Gross-Pitaevskii equation solver.</h4>
 
 ---
 
