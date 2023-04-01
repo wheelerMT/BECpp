@@ -30,7 +30,7 @@ std::vector<std::tuple<double, double>> generate_positions(const int n_vort, con
     // Construct random generator
     unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
     std::default_random_engine generator(seed);
-    std::uniform_real_distribution<double> uniform_distribution(-grid.len_x / 2, grid.len_x / 2);
+    std::uniform_real_distribution<double> uniform_distribution(-grid.m_xLength / 2, grid.m_xLength / 2);
 
     while (positions.size() < n_vort)
     {
@@ -80,29 +80,29 @@ doubleArray_t construct_phase(const int n_vort, const double threshold, const Gr
 
     // Phase array
     doubleArray_t theta;
-    theta.resize(grid.nx, std::vector<double>(grid.ny));
+    theta.resize(grid.m_xPoints, std::vector<double>(grid.m_yPoints));
 
     for (int num = 0; num < n_vort / 2; ++num)
     {
         doubleArray_t theta_k;
-        theta_k.resize(grid.nx, std::vector<double>(grid.ny));
+        theta_k.resize(grid.m_xPoints, std::vector<double>(grid.m_yPoints));
 
         // Extract positions
         auto[x_m, y_m] = positions[num];
         auto[x_p, y_p] = positions[n_vort / 2 + num];
 
-        double x_m_tilde = 2 * PI * ((x_m + grid.len_x) / grid.len_x);
-        double y_m_tilde = 2 * PI * ((y_m + grid.len_y) / grid.len_y);
-        double x_p_tilde = 2 * PI * ((x_p + grid.len_x) / grid.len_x);
-        double y_p_tilde = 2 * PI * ((y_p + grid.len_y) / grid.len_y);
+        double x_m_tilde = 2 * PI * ((x_m + grid.m_xLength) / grid.m_xLength);
+        double y_m_tilde = 2 * PI * ((y_m + grid.m_yLength) / grid.m_yLength);
+        double x_p_tilde = 2 * PI * ((x_p + grid.m_xLength) / grid.m_xLength);
+        double y_p_tilde = 2 * PI * ((y_p + grid.m_yLength) / grid.m_yLength);
 
 #pragma omp parallel for collapse(2) shared(grid, theta, theta_k, y_m_tilde, x_m_tilde, y_p_tilde, x_p_tilde) default(none)
-        for (int i = 0; i < grid.nx; ++i)
+        for (int i = 0; i < grid.m_xPoints; ++i)
         {
-            for (int j = 0; j < grid.ny; ++j)
+            for (int j = 0; j < grid.m_yPoints; ++j)
             {
-                double x_tilde = 2 * PI * ((grid.X[i][j] + grid.len_x) / grid.len_x);
-                double y_tilde = 2 * PI * ((grid.Y[i][j] + grid.len_x) / grid.len_x);
+                double x_tilde = 2 * PI * ((grid.m_xMesh[i][j] + grid.m_xLength) / grid.m_xLength);
+                double y_tilde = 2 * PI * ((grid.m_yMesh[i][j] + grid.m_xLength) / grid.m_xLength);
 
                 // Aux variables
                 double Y_minus = y_tilde - y_m_tilde;
