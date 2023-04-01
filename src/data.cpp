@@ -35,26 +35,26 @@ void DataManager::save_parameters(const Parameters &params, const Grid2D &grid)
     file.createDataSet("/time/dt", params.dt.real());
 
     // Save grid parameters to file
-    file.createDataSet("/grid/nx", grid.nx);
-    file.createDataSet("/grid/ny", grid.ny);
-    file.createDataSet("/grid/dx", grid.dx);
-    file.createDataSet("/grid/dy", grid.dy);
+    file.createDataSet("/grid/m_xPoints", grid.m_xPoints);
+    file.createDataSet("/grid/m_yPoints", grid.m_yPoints);
+    file.createDataSet("/grid/m_xGridSpacing", grid.m_xGridSpacing);
+    file.createDataSet("/grid/m_yGridSpacing", grid.m_yGridSpacing);
 
 }
 
 void DataManager::generate_wfn_datasets(const Grid2D &grid)
 {
     // Define dataspaces with arbitrary length of last dimension
-    HighFive::DataSpace ds_plus = HighFive::DataSpace({grid.nx * grid.ny, 1},
-                                                      {grid.nx * grid.ny, HighFive::DataSpace::UNLIMITED});
-    HighFive::DataSpace ds_zero = HighFive::DataSpace({grid.nx * grid.ny, 1},
-                                                      {grid.nx * grid.ny, HighFive::DataSpace::UNLIMITED});
-    HighFive::DataSpace ds_minus = HighFive::DataSpace({grid.nx * grid.ny, 1},
-                                                       {grid.nx * grid.ny, HighFive::DataSpace::UNLIMITED});
+    HighFive::DataSpace ds_plus = HighFive::DataSpace({grid.m_xPoints * grid.m_yPoints, 1},
+                                                      {grid.m_xPoints * grid.m_yPoints, HighFive::DataSpace::UNLIMITED});
+    HighFive::DataSpace ds_zero = HighFive::DataSpace({grid.m_xPoints * grid.m_yPoints, 1},
+                                                      {grid.m_xPoints * grid.m_yPoints, HighFive::DataSpace::UNLIMITED});
+    HighFive::DataSpace ds_minus = HighFive::DataSpace({grid.m_xPoints * grid.m_yPoints, 1},
+                                                       {grid.m_xPoints * grid.m_yPoints, HighFive::DataSpace::UNLIMITED});
 
     // Use chunking
     HighFive::DataSetCreateProps props;
-    props.add(HighFive::Chunking(std::vector<hsize_t>{(grid.nx * grid.ny) / 4, 1}));
+    props.add(HighFive::Chunking(std::vector<hsize_t>{(grid.m_xPoints * grid.m_yPoints) / 4, 1}));
 
     // Create wavefunction datasets
     file.createDataSet("/wavefunction/psi_plus", ds_plus,
@@ -74,17 +74,17 @@ void DataManager::save_wavefunction_data(Wavefunction2D &psi)
     HighFive::DataSet ds_minus = file.getDataSet("/wavefunction/psi_minus");
 
     // Resize datasets
-    ds_plus.resize({psi.grid.nx * psi.grid.ny, save_index + 1});
-    ds_zero.resize({psi.grid.nx * psi.grid.ny, save_index + 1});
-    ds_minus.resize({psi.grid.nx * psi.grid.ny, save_index + 1});
+    ds_plus.resize({psi.grid.m_xPoints * psi.grid.m_yPoints, save_index + 1});
+    ds_zero.resize({psi.grid.m_xPoints * psi.grid.m_yPoints, save_index + 1});
+    ds_minus.resize({psi.grid.m_xPoints * psi.grid.m_yPoints, save_index + 1});
 
     // FFT so we update real-space arrays
     psi.ifft();
 
     // Save new wavefunction data
-    ds_plus.select({0, save_index}, {psi.grid.nx * psi.grid.ny, 1}).write(psi.plus);
-    ds_zero.select({0, save_index}, {psi.grid.nx * psi.grid.ny, 1}).write(psi.zero);
-    ds_minus.select({0, save_index}, {psi.grid.nx * psi.grid.ny, 1}).write(psi.minus);
+    ds_plus.select({0, save_index}, {psi.grid.m_xPoints * psi.grid.m_yPoints, 1}).write(psi.plus);
+    ds_zero.select({0, save_index}, {psi.grid.m_xPoints * psi.grid.m_yPoints, 1}).write(psi.zero);
+    ds_minus.select({0, save_index}, {psi.grid.m_xPoints * psi.grid.m_yPoints, 1}).write(psi.minus);
 
     // Increase save index
     save_index += 1;

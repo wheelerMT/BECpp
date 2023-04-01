@@ -1,7 +1,3 @@
-//
-// Created by mattw on 04/01/2022.
-//
-
 #ifndef BECPP_GRID_H
 #define BECPP_GRID_H
 
@@ -10,80 +6,82 @@
 
 using doubleArray_t = std::vector<std::vector<double>>;
 
-class Grid1D
+class Grid
+{
+protected:
+    virtual void constructGridParams() = 0;
+    virtual void constructGrids() = 0;
+    virtual void fftshift() = 0;
+    virtual ~Grid() = default;
+};
+
+class Grid1D : public Grid
 {
 private:
-    // Grid2D & parameter construction functions
-    void construct_grid_params();
+    void constructGridParams() override;
+    void constructGrids() override;
+    void fftshift() override;
 
-    void construct_grids();
+    const unsigned int m_xPoints{};
+    double m_xGridSpacing{};
+    double m_xFourierGridSpacing{};
+    double m_xLength{};
 
-    void fftshift();
+    std::vector<double> m_xMesh{};
+    std::vector<double> m_xFourierMesh{};
+    std::vector<double> m_wavenumber{};
 
 public:
-    // Grid1D points
-    const unsigned int nx{};
-
-    // Grid1D spacing
-    double dx{};
-    double dkx{};
-
-    // Grid1D lengths
-    double len_x{};
-    double len_y{};
-
-    // Grids
-    std::vector<double> X{};
-    std::vector<double> Kx{};
-    std::vector<double> K{};
-
-    // Constructors
     Grid1D(unsigned int nx, double dx);
+    ~Grid1D() override = default;
 
-    Grid1D(const Grid1D &grid);  // Copy constructor
+    [[nodiscard]] unsigned int xPoints() const;
+    [[nodiscard]] double xGridSpacing() const;
+    [[nodiscard]] double xFourierGridSpacing() const;
+    [[nodiscard]] double xLength() const;
+    [[nodiscard]] std::vector<double> wavenumber() const;
 
-    // Declare wavefunction class a friend
     friend class Wavefunction;
 };
 
-class Grid2D
+class Grid2D : public Grid
 {
 private:
-    // Grid2D & parameter construction functions
-    void construct_grid_params();
+    void constructGridParams() override;
+    void constructGrids() override;
+    void fftshift() override;
 
-    void construct_grids();
+    const unsigned int m_xPoints{};
+    const unsigned int m_yPoints{};
+    double m_xGridSpacing{};
+    double m_yGridSpacing{};
+    double m_gridSpacingProduct{};
+    double m_xFourierGridSpacing{};
+    double m_yFourierGridSpacing{};
+    double m_xLength{};
+    double m_yLength{};
 
-    void fftshift();
+    doubleArray_t m_xMesh{};
+    doubleArray_t m_yMesh{};
+    doubleArray_t m_xFourierMesh{};
+    doubleArray_t m_yFourierMesh{};
+    doubleArray_t m_wavenumber{};
 
 public:
-    // Grid2D points
-    const unsigned int nx{};
-    const unsigned int ny{};
-
-    // Grid2D spacing
-    double dx{};
-    double dy{};
-    double dkx{};
-    double dky{};
-
-    // Grid2D lengths
-    double len_x{};
-    double len_y{};
-
-    // Grids
-    doubleArray_t X{};
-    doubleArray_t Y{};
-    doubleArray_t Kx{};
-    doubleArray_t Ky{};
-    doubleArray_t K{};
-
-    // Constructors
     Grid2D(unsigned int nx, unsigned int ny, double dx, double dy);
+    ~Grid2D() override = default;
 
-    Grid2D(const Grid2D &grid);  // Copy constructor
+    [[nodiscard]] unsigned int xPoints() const;
+    [[nodiscard]] unsigned int yPoints() const;
+    [[nodiscard]] double xGridSpacing() const;
+    [[nodiscard]] double yGridSpacing() const;
+    [[nodiscard]] double gridSpacingProduct() const;
+    [[nodiscard]] double xFourierGridSpacing() const;
+    [[nodiscard]] double yFourierGridSpacing() const;
+    [[nodiscard]] double xLength() const;
+    [[nodiscard]] double yLength() const;
+    [[nodiscard]] doubleArray_t wavenumber() const;
 
-    // Declare wavefunction class a friend
     friend class Wavefunction;
 };
 
