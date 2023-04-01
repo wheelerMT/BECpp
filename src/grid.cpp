@@ -32,8 +32,6 @@ void Grid2D::constructGrids()
             m_xFourierMesh[i][j] = (j - m_xPoints / 2.) * m_xFourierGridSpacing;
             m_yMesh[j][i] = (j - m_yPoints / 2.) * m_yGridSpacing;
             m_yFourierMesh[j][i] = (j - m_yPoints / 2.) * m_yFourierGridSpacing;
-            m_wavenumber[i][j] = std::pow(m_xFourierMesh[i][j], 2) +
-                                 std::pow(m_yFourierMesh[i][j], 2);
         }
     }
 
@@ -132,7 +130,6 @@ void Grid1D::constructGrids()
     {
         m_xMesh[i] = (i - m_xPoints / 2.) * m_xGridSpacing;
         m_xFourierMesh[i] = (i - m_xPoints / 2.) * m_xFourierGridSpacing;
-        m_wavenumber[i] = std::pow(m_xFourierMesh[i], 2);
     }
 
     // Shift the k-space grids, so they are in the right order
@@ -150,7 +147,11 @@ void Grid1D::fftshift()
     std::ranges::rotate(m_xFourierMesh.begin(),
                         m_xFourierMesh.begin() + m_xPoints / 2,
                         m_xFourierMesh.end());
-    m_wavenumber = m_xFourierMesh;
+
+    for (int i = 0; i < m_xPoints; ++i)
+    {
+        m_wavenumber[i] = std::pow(m_xFourierMesh[i], 2);
+    }
 }
 unsigned int Grid1D::xPoints() const { return m_xPoints; }
 double Grid1D::xGridSpacing() const { return m_xGridSpacing; }
