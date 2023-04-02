@@ -35,6 +35,5 @@
 cmake-build-debug
 cmake-build-debug-coverage
 .idea
-lib
 data
 python_tests
