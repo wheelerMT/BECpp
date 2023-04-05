@@ -16,7 +16,8 @@ protected:
     virtual ~Grid() = default;
 };
 
-struct Mesh1D {
+struct Mesh1D
+{
     std::vector<double> m_xMesh{};
     std::vector<double> m_xFourierMesh{};
     std::vector<double> m_wavenumber{};
@@ -48,6 +49,15 @@ public:
     friend class Wavefunction;
 };
 
+struct Mesh2D
+{
+    doubleArray_t xMesh{};
+    doubleArray_t yMesh{};
+    doubleArray_t xFourierMesh{};
+    doubleArray_t yFourierMesh{};
+    doubleArray_t wavenumber{};
+};
+
 class Grid2D : public Grid
 {
 private:
@@ -55,35 +65,21 @@ private:
     void constructMesh() override;
     void fftshift() override;
 
-    const unsigned int m_xPoints{};
-    const unsigned int m_yPoints{};
-    double m_xGridSpacing{};
-    double m_yGridSpacing{};
-    double m_gridSpacingProduct{};
-    double m_xFourierGridSpacing{};
-    double m_yFourierGridSpacing{};
-    double m_xLength{};
-    double m_yLength{};
-
-    doubleArray_t m_xMesh{};
-    doubleArray_t m_yMesh{};
-    doubleArray_t m_xFourierMesh{};
-    doubleArray_t m_yFourierMesh{};
-    doubleArray_t m_wavenumber{};
+    const std::tuple<unsigned int, unsigned int> m_gridPoints{};
+    const std::tuple<double, double> m_gridSpacing{};
+    std::tuple<double, double> m_fourierGridSpacing{};
+    std::tuple<double, double> m_gridLength{};
+    Mesh2D m_mesh{};
 
 public:
-    Grid2D(unsigned int nx, unsigned int ny, double dx, double dy);
+    Grid2D(std::tuple<unsigned int, unsigned int> points,
+           std::tuple<double, double> gridSpacing);
     ~Grid2D() override = default;
 
-    [[nodiscard]] unsigned int xPoints() const;
-    [[nodiscard]] unsigned int yPoints() const;
-    [[nodiscard]] double xGridSpacing() const;
-    [[nodiscard]] double yGridSpacing() const;
-    [[nodiscard]] double gridSpacingProduct() const;
-    [[nodiscard]] double xFourierGridSpacing() const;
-    [[nodiscard]] double yFourierGridSpacing() const;
-    [[nodiscard]] double xLength() const;
-    [[nodiscard]] double yLength() const;
+    [[nodiscard]] std::tuple<unsigned int, unsigned int> ndim() const;
+    [[nodiscard]] std::tuple<double, double> gridSpacing() const;
+    [[nodiscard]] std::tuple<double, double> fourierGridSpacing() const;
+    [[nodiscard]] std::tuple<double, double> gridLength() const;
     [[nodiscard]] doubleArray_t wavenumber() const;
 
     friend class Wavefunction;
