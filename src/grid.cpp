@@ -124,7 +124,7 @@ std::tuple<double, double> Grid2D::fourierGridSpacing() const
 
 std::tuple<double, double> Grid2D::gridLength() const { return m_gridLength; }
 
-doubleArray_t Grid2D::wavenumber() const { return m_mesh.wavenumber; }
+vector2D_t Grid2D::wavenumber() const { return m_mesh.wavenumber; }
 
 void Grid3D::constructGridParams()
 {
@@ -221,4 +221,4 @@ double Grid3D::yLength() const { return m_yLength; }
 
 double Grid3D::zLength() const { return m_zLength; }
 
-std::vector<doubleArray_t> Grid3D::wavenumber() const { return m_wavenumber; }
+std::vector<vector2D_t> Grid3D::wavenumber() const { return m_wavenumber; }

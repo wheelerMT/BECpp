@@ -5,7 +5,7 @@
 #include <utility>
 #include <vector>
 
-using doubleArray_t = std::vector<std::vector<double>>;
+using vector2D_t = std::vector<std::vector<double>>;
 
 class Grid
 {
@@ -51,11 +51,11 @@ public:
 
 struct Mesh2D
 {
-    doubleArray_t xMesh{};
-    doubleArray_t yMesh{};
-    doubleArray_t xFourierMesh{};
-    doubleArray_t yFourierMesh{};
-    doubleArray_t wavenumber{};
+    vector2D_t xMesh{};
+    vector2D_t yMesh{};
+    vector2D_t xFourierMesh{};
+    vector2D_t yFourierMesh{};
+    vector2D_t wavenumber{};
 };
 
 class Grid2D : public Grid
@@ -80,7 +80,7 @@ public:
     [[nodiscard]] std::tuple<double, double> gridSpacing() const;
     [[nodiscard]] std::tuple<double, double> fourierGridSpacing() const;
     [[nodiscard]] std::tuple<double, double> gridLength() const;
-    [[nodiscard]] doubleArray_t wavenumber() const;
+    [[nodiscard]] vector2D_t wavenumber() const;
 
     friend class Wavefunction;
 };
@@ -106,13 +106,13 @@ private:
     double m_yLength{};
     double m_zLength{};
 
-    std::vector<doubleArray_t> m_xMesh{};
-    std::vector<doubleArray_t> m_yMesh{};
-    std::vector<doubleArray_t> m_zMesh{};
-    std::vector<doubleArray_t> m_xFourierMesh{};
-    std::vector<doubleArray_t> m_yFourierMesh{};
-    std::vector<doubleArray_t> m_zFourierMesh{};
-    std::vector<doubleArray_t> m_wavenumber{};
+    std::vector<vector2D_t> m_xMesh{};
+    std::vector<vector2D_t> m_yMesh{};
+    std::vector<vector2D_t> m_zMesh{};
+    std::vector<vector2D_t> m_xFourierMesh{};
+    std::vector<vector2D_t> m_yFourierMesh{};
+    std::vector<vector2D_t> m_zFourierMesh{};
+    std::vector<vector2D_t> m_wavenumber{};
 
 public:
     Grid3D(std::tuple<unsigned int, unsigned int, unsigned int> points,
@@ -132,7 +132,7 @@ public:
     [[nodiscard]] double xLength() const;
     [[nodiscard]] double yLength() const;
     [[nodiscard]] double zLength() const;
-    [[nodiscard]] std::vector<doubleArray_t> wavenumber() const;
+    [[nodiscard]] std::vector<vector2D_t> wavenumber() const;
 
     friend class Wavefunction;
 };
