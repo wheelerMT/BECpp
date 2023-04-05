@@ -71,33 +71,33 @@ public:
 
 TEST_F(Grid3DTest, PointsSetCorrectly)
 {
-    ASSERT_EQ(grid.xPoints(), 64);
-    ASSERT_EQ(grid.yPoints(), 64);
-    ASSERT_EQ(grid.zPoints(), 64);
+    auto [xPoints, yPoints, zPoints] = grid.ndim();
+    ASSERT_EQ(xPoints, 64);
+    ASSERT_EQ(yPoints, 64);
+    ASSERT_EQ(zPoints, 64);
 }
 
 TEST_F(Grid3DTest, SpacingSetCorrectly)
 {
-    ASSERT_EQ(grid.xGridSpacing(), 0.5);
-    ASSERT_EQ(grid.yGridSpacing(), 0.5);
-    ASSERT_EQ(grid.zGridSpacing(), 0.5);
-}
-
-TEST_F(Grid3DTest, SpacingProductCorrect)
-{
-    ASSERT_EQ(grid.gridSpacingProduct(), 0.5 * 0.5 * 0.5);
+    auto [xGridSpacing, yGridSpacing, zGridSpacing] = grid.gridSpacing();
+    ASSERT_EQ(xGridSpacing, 0.5);
+    ASSERT_EQ(yGridSpacing, 0.5);
+    ASSERT_EQ(zGridSpacing, 0.5);
 }
 
 TEST_F(Grid3DTest, FourierSpacingSetCorrectly)
 {
-    ASSERT_EQ(grid.xFourierGridSpacing(), PI / 16.0);
-    ASSERT_EQ(grid.yFourierGridSpacing(), PI / 16.0);
-    ASSERT_EQ(grid.zFourierGridSpacing(), PI / 16.0);
+    auto [xFourierGridSpacing, yFourierGridSpacing, zFourierGridSpacing] =
+            grid.fourierGridSpacing();
+    ASSERT_EQ(xFourierGridSpacing, PI / 16.0);
+    ASSERT_EQ(yFourierGridSpacing, PI / 16.0);
+    ASSERT_EQ(zFourierGridSpacing, PI / 16.0);
 }
 
 TEST_F(Grid3DTest, LengthSetCorrectly)
 {
-    ASSERT_EQ(grid.xLength(), 32);
-    ASSERT_EQ(grid.yLength(), 32);
-    ASSERT_EQ(grid.zLength(), 32);
+    auto [xLength, yLength, zLength] = grid.gridLength();
+    ASSERT_EQ(xLength, 32);
+    ASSERT_EQ(yLength, 32);
+    ASSERT_EQ(zLength, 32);
 }

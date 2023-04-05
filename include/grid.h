@@ -6,6 +6,7 @@
 #include <vector>
 
 using vector2D_t = std::vector<std::vector<double>>;
+using vector3D_t = std::vector<std::vector<std::vector<double>>>;
 
 class Grid
 {
@@ -85,6 +86,17 @@ public:
     friend class Wavefunction;
 };
 
+struct Mesh3D
+{
+    vector3D_t xMesh{};
+    vector3D_t yMesh{};
+    vector3D_t zMesh{};
+    vector3D_t xFourierMesh{};
+    vector3D_t yFourierMesh{};
+    vector3D_t zFourierMesh{};
+    vector3D_t wavenumber{};
+};
+
 class Grid3D : public Grid
 {
 private:
@@ -92,47 +104,22 @@ private:
     void constructMesh() override;
     void fftshift() override;
 
-    const unsigned int m_xPoints{};
-    const unsigned int m_yPoints{};
-    const unsigned int m_zPoints{};
-    double m_xGridSpacing{};
-    double m_yGridSpacing{};
-    double m_zGridSpacing{};
-    double m_gridSpacingProduct{};
-    double m_xFourierGridSpacing{};
-    double m_yFourierGridSpacing{};
-    double m_zFourierGridSpacing{};
-    double m_xLength{};
-    double m_yLength{};
-    double m_zLength{};
-
-    std::vector<vector2D_t> m_xMesh{};
-    std::vector<vector2D_t> m_yMesh{};
-    std::vector<vector2D_t> m_zMesh{};
-    std::vector<vector2D_t> m_xFourierMesh{};
-    std::vector<vector2D_t> m_yFourierMesh{};
-    std::vector<vector2D_t> m_zFourierMesh{};
-    std::vector<vector2D_t> m_wavenumber{};
+    const std::tuple<unsigned int, unsigned int, unsigned int> m_gridPoints{};
+    const std::tuple<double, double, double> m_gridSpacing{};
+    std::tuple<double, double, double> m_fourierGridSpacing{};
+    std::tuple<double, double, double> m_gridLength{};
+    Mesh3D m_mesh{};
 
 public:
     Grid3D(std::tuple<unsigned int, unsigned int, unsigned int> points,
            std::tuple<double, double, double> gridSpacing);
     ~Grid3D() override = default;
 
-    [[nodiscard]] unsigned int xPoints() const;
-    [[nodiscard]] unsigned int yPoints() const;
-    [[nodiscard]] unsigned int zPoints() const;
-    [[nodiscard]] double xGridSpacing() const;
-    [[nodiscard]] double yGridSpacing() const;
-    [[nodiscard]] double zGridSpacing() const;
-    [[nodiscard]] double gridSpacingProduct() const;
-    [[nodiscard]] double xFourierGridSpacing() const;
-    [[nodiscard]] double yFourierGridSpacing() const;
-    [[nodiscard]] double zFourierGridSpacing() const;
-    [[nodiscard]] double xLength() const;
-    [[nodiscard]] double yLength() const;
-    [[nodiscard]] double zLength() const;
-    [[nodiscard]] std::vector<vector2D_t> wavenumber() const;
+    [[nodiscard]] std::tuple<unsigned int, unsigned int, unsigned int> ndim() const;
+    [[nodiscard]] std::tuple<double, double, double> gridSpacing() const;
+    [[nodiscard]] std::tuple<double, double, double> fourierGridSpacing() const;
+    [[nodiscard]] std::tuple<double, double, double> gridLength() const;
+    [[nodiscard]] vector3D_t wavenumber() const;
 
     friend class Wavefunction;
 };
