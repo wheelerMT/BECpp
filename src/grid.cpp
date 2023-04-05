@@ -128,6 +128,14 @@ std::tuple<double, double> Grid2D::gridLength() const { return m_gridLength; }
 
 vector2D_t Grid2D::wavenumber() const { return m_mesh.wavenumber; }
 
+Grid3D::Grid3D(std::tuple<unsigned int, unsigned int, unsigned int> points,
+               std::tuple<double, double, double> gridSpacing)
+    : m_gridPoints{std::move(points)}, m_gridSpacing{std::move(gridSpacing)}
+{
+    Grid3D::constructGridParams();
+    Grid3D::constructMesh();
+}
+
 void Grid3D::constructGridParams()
 {
     auto [xPoints, yPoints, zPoints] = ndim();
@@ -162,7 +170,6 @@ void Grid3D::constructMesh()
     m_mesh.wavenumber.resize(xPoints,
                              vector2D_t(yPoints, std::vector<double>(zPoints)));
 
-    // Construct grids
     for (int i = 0; i < xPoints; ++i)
     {
         for (int j = 0; j < yPoints; ++j)
@@ -189,14 +196,6 @@ void Grid3D::constructMesh()
 void Grid3D::fftshift()
 {
     // TODO: Implement using std::rotate
-}
-
-Grid3D::Grid3D(std::tuple<unsigned int, unsigned int, unsigned int> points,
-               std::tuple<double, double, double> gridSpacing)
-    : m_gridPoints{std::move(points)}, m_gridSpacing{std::move(gridSpacing)}
-{
-    Grid3D::constructGridParams();
-    Grid3D::constructMesh();
 }
 
 std::tuple<unsigned int, unsigned int, unsigned int> Grid3D::ndim() const
