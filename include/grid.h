@@ -11,35 +11,38 @@ class Grid
 {
 protected:
     virtual void constructGridParams() = 0;
-    virtual void constructGrids() = 0;
+    virtual void constructMesh() = 0;
     virtual void fftshift() = 0;
     virtual ~Grid() = default;
+};
+
+struct Mesh1D {
+    std::vector<double> m_xMesh{};
+    std::vector<double> m_xFourierMesh{};
+    std::vector<double> m_wavenumber{};
 };
 
 class Grid1D : public Grid
 {
 private:
     void constructGridParams() override;
-    void constructGrids() override;
+    void constructMesh() override;
     void fftshift() override;
 
-    const unsigned int m_xPoints{};
-    double m_xGridSpacing{};
-    double m_xFourierGridSpacing{};
-    double m_xLength{};
-
-    std::vector<double> m_xMesh{};
-    std::vector<double> m_xFourierMesh{};
-    std::vector<double> m_wavenumber{};
+    const unsigned int m_gridPoints{};
+    double m_gridSpacing{};
+    double m_fourierGridSpacing{};
+    double m_length{};
+    Mesh1D m_mesh{};
 
 public:
     Grid1D(unsigned int nx, double dx);
     ~Grid1D() override = default;
 
-    [[nodiscard]] unsigned int xPoints() const;
-    [[nodiscard]] double xGridSpacing() const;
-    [[nodiscard]] double xFourierGridSpacing() const;
-    [[nodiscard]] double xLength() const;
+    [[nodiscard]] unsigned int shape() const;
+    [[nodiscard]] double gridSpacing() const;
+    [[nodiscard]] double fourierGridSpacing() const;
+    [[nodiscard]] double gridLength() const;
     [[nodiscard]] std::vector<double> wavenumber() const;
 
     friend class Wavefunction;
@@ -49,7 +52,7 @@ class Grid2D : public Grid
 {
 private:
     void constructGridParams() override;
-    void constructGrids() override;
+    void constructMesh() override;
     void fftshift() override;
 
     const unsigned int m_xPoints{};
@@ -90,7 +93,7 @@ class Grid3D : public Grid
 {
 private:
     void constructGridParams() override;
-    void constructGrids() override;
+    void constructMesh() override;
     void fftshift() override;
 
     const unsigned int m_xPoints{};

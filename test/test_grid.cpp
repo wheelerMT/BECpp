@@ -11,22 +11,22 @@ public:
 
 TEST_F(Grid1DTest, PointsSetCorrectly)
 {
-    ASSERT_EQ(grid.xPoints(), 128);
+    ASSERT_EQ(grid.shape(), 128);
 }
 
 TEST_F(Grid1DTest, SpacingSetCorrectly)
 {
-    ASSERT_EQ(grid.xGridSpacing(), 0.5);
+    ASSERT_EQ(grid.gridSpacing(), 0.5);
 }
 
 TEST_F(Grid1DTest, FourierSpacingSetCorrectly)
 {
-    ASSERT_EQ(grid.xFourierGridSpacing(), PI / 32.0);
+    ASSERT_EQ(grid.fourierGridSpacing(), PI / 32.0);
 }
 
 TEST_F(Grid1DTest, LengthSetCorrectly)
 {
-    ASSERT_EQ(grid.xLength(), 64);
+    ASSERT_EQ(grid.gridLength(), 64);
 }
 
 TEST_F(Grid1DTest, WavenumberSetCorrectly)
