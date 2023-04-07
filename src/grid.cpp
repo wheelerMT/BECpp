@@ -112,7 +112,7 @@ void Grid2D::fftshift()
     // To implement
 }
 
-std::tuple<unsigned int, unsigned int> Grid2D::ndim() const
+std::tuple<unsigned int, unsigned int> Grid2D::shape() const
 {
     return m_gridPoints;
 }
@@ -138,7 +138,7 @@ Grid3D::Grid3D(std::tuple<unsigned int, unsigned int, unsigned int> points,
 
 void Grid3D::constructGridParams()
 {
-    auto [xPoints, yPoints, zPoints] = ndim();
+    auto [xPoints, yPoints, zPoints] = shape();
     auto [xGridSpacing, yGridSpacing, zGridSpacing] = gridSpacing();
 
     m_fourierGridSpacing = {PI / (xPoints / 2. * xGridSpacing),
@@ -150,7 +150,7 @@ void Grid3D::constructGridParams()
 
 void Grid3D::constructMesh()
 {
-    auto [xPoints, yPoints, zPoints] = ndim();
+    auto [xPoints, yPoints, zPoints] = shape();
     auto [xGridSpacing, yGridSpacing, zGridSpacing] = gridSpacing();
     auto [xFourierGridSpacing, yFourierGridSpacing, zFourierGridSpacing] =
             fourierGridSpacing();
@@ -198,7 +198,7 @@ void Grid3D::fftshift()
     // TODO: Implement using std::rotate
 }
 
-std::tuple<unsigned int, unsigned int, unsigned int> Grid3D::ndim() const
+std::tuple<unsigned int, unsigned int, unsigned int> Grid3D::shape() const
 {
     return m_gridPoints;
 }

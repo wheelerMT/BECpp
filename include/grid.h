@@ -77,7 +77,7 @@ public:
            std::tuple<double, double> gridSpacing);
     ~Grid2D() override = default;
 
-    [[nodiscard]] std::tuple<unsigned int, unsigned int> ndim() const;
+    [[nodiscard]] std::tuple<unsigned int, unsigned int> shape() const;
     [[nodiscard]] std::tuple<double, double> gridSpacing() const;
     [[nodiscard]] std::tuple<double, double> fourierGridSpacing() const;
     [[nodiscard]] std::tuple<double, double> gridLength() const;
@@ -115,7 +115,7 @@ public:
            std::tuple<double, double, double> gridSpacing);
     ~Grid3D() override = default;
 
-    [[nodiscard]] std::tuple<unsigned int, unsigned int, unsigned int> ndim() const;
+    [[nodiscard]] std::tuple<unsigned int, unsigned int, unsigned int> shape() const;
     [[nodiscard]] std::tuple<double, double, double> gridSpacing() const;
     [[nodiscard]] std::tuple<double, double, double> fourierGridSpacing() const;
     [[nodiscard]] std::tuple<double, double, double> gridLength() const;

@@ -35,7 +35,7 @@ public:
 
 TEST_F(Grid2DTest, PointsSetCorrectly)
 {
-    auto [xPoints, yPoints] = grid.ndim();
+    auto [xPoints, yPoints] = grid.shape();
     ASSERT_EQ(xPoints, 128);
     ASSERT_EQ(yPoints, 128);
 }
@@ -71,7 +71,7 @@ public:
 
 TEST_F(Grid3DTest, PointsSetCorrectly)
 {
-    auto [xPoints, yPoints, zPoints] = grid.ndim();
+    auto [xPoints, yPoints, zPoints] = grid.shape();
     ASSERT_EQ(xPoints, 64);
     ASSERT_EQ(yPoints, 64);
     ASSERT_EQ(zPoints, 64);
