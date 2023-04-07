@@ -65,10 +65,8 @@ Grid2D::Grid2D(std::tuple<unsigned int, unsigned int> points,
 
 void Grid2D::constructGridParams()
 {
-    unsigned int xPoints{std::get<0>(m_gridPoints)};
-    unsigned int yPoints{std::get<1>(m_gridPoints)};
-    double xGridSpacing{std::get<0>(m_gridSpacing)};
-    double yGridSpacing{std::get<1>(m_gridSpacing)};
+    auto [xPoints, yPoints] = shape();
+    auto [xGridSpacing, yGridSpacing] = gridSpacing();
 
     m_fourierGridSpacing = {PI / (xPoints / 2. * xGridSpacing),
                             PI / (yPoints / 2. * yGridSpacing)};
@@ -77,12 +75,9 @@ void Grid2D::constructGridParams()
 
 void Grid2D::constructMesh()
 {
-    unsigned int xPoints{std::get<0>(m_gridPoints)};
-    unsigned int yPoints{std::get<1>(m_gridPoints)};
-    double xGridSpacing{std::get<0>(m_gridSpacing)};
-    double yGridSpacing{std::get<1>(m_gridSpacing)};
-    double xFourierGridSpacing{std::get<0>(m_fourierGridSpacing)};
-    double yFourierGridSpacing{std::get<1>(m_fourierGridSpacing)};
+    auto [xPoints, yPoints] = shape();
+    auto [xGridSpacing, yGridSpacing] = gridSpacing();
+    auto[xFourierGridSpacing, yFourierGridSpacing] = fourierGridSpacing();
 
     m_mesh.xMesh.resize(xPoints, std::vector<double>(yPoints));
     m_mesh.yMesh.resize(xPoints, std::vector<double>(yPoints));
