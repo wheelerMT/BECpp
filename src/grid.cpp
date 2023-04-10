@@ -16,7 +16,7 @@ void Grid1D::constructGridParams()
     m_length = m_gridPoints * m_gridSpacing;
 }
 
-void resizeMesh1D(Mesh1D mesh, unsigned int xPoints)
+void resizeMesh1D(Mesh1D& mesh, unsigned int xPoints)
 {
     mesh.xMesh.resize(xPoints);
     mesh.xFourierMesh.resize(xPoints);
@@ -73,7 +73,7 @@ void Grid2D::constructGridParams()
     m_gridLength = {xPoints * xGridSpacing, yPoints * yGridSpacing};
 }
 
-void resizeMesh2D(Mesh2D mesh, unsigned int xPoints, unsigned int yPoints)
+void resizeMesh2D(Mesh2D& mesh, unsigned int xPoints, unsigned int yPoints)
 {
     mesh.xMesh.resize(xPoints, std::vector<double>(yPoints));
     mesh.yMesh.resize(xPoints, std::vector<double>(yPoints));
@@ -148,7 +148,7 @@ void Grid3D::constructGridParams()
                     yPoints * zGridSpacing};
 }
 
-void resizeMesh3D(Mesh3D mesh, unsigned int xPoints, unsigned int yPoints, unsigned int zPoints)
+void resizeMesh3D(Mesh3D& mesh, unsigned int xPoints, unsigned int yPoints, unsigned int zPoints)
 {
     mesh.xMesh.resize(xPoints,
                       vector2D_t(yPoints, std::vector<double>(zPoints)));
