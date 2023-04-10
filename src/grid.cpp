@@ -16,14 +16,19 @@ void Grid1D::constructGridParams()
     m_length = m_gridPoints * m_gridSpacing;
 }
 
+void resizeMesh1D(Mesh1D mesh, unsigned int xPoints)
+{
+    mesh.xMesh.resize(xPoints);
+    mesh.xFourierMesh.resize(xPoints);
+    mesh.wavenumber.resize(xPoints);
+}
+
 void Grid1D::constructMesh()
 {
     auto xPoints = shape();
     auto xGridSpacing = gridSpacing();
     auto xFourierGridSpacing = fourierGridSpacing();
-    m_mesh.xMesh.resize(xPoints);
-    m_mesh.xFourierMesh.resize(xPoints);
-    m_mesh.wavenumber.resize(xPoints);
+    resizeMesh1D(m_mesh, xPoints);
 
     for (int i = 0; i < xPoints; ++i)
     {
@@ -68,17 +73,21 @@ void Grid2D::constructGridParams()
     m_gridLength = {xPoints * xGridSpacing, yPoints * yGridSpacing};
 }
 
+void resizeMesh2D(Mesh2D mesh, unsigned int xPoints, unsigned int yPoints)
+{
+    mesh.xMesh.resize(xPoints, std::vector<double>(yPoints));
+    mesh.yMesh.resize(xPoints, std::vector<double>(yPoints));
+    mesh.xFourierMesh.resize(xPoints, std::vector<double>(yPoints));
+    mesh.yFourierMesh.resize(xPoints, std::vector<double>(yPoints));
+    mesh.wavenumber.resize(xPoints, std::vector<double>(yPoints));
+}
+
 void Grid2D::constructMesh()
 {
     auto [xPoints, yPoints] = shape();
     auto [xGridSpacing, yGridSpacing] = gridSpacing();
     auto [xFourierGridSpacing, yFourierGridSpacing] = fourierGridSpacing();
-
-    m_mesh.xMesh.resize(xPoints, std::vector<double>(yPoints));
-    m_mesh.yMesh.resize(xPoints, std::vector<double>(yPoints));
-    m_mesh.xFourierMesh.resize(xPoints, std::vector<double>(yPoints));
-    m_mesh.yFourierMesh.resize(xPoints, std::vector<double>(yPoints));
-    m_mesh.wavenumber.resize(xPoints, std::vector<double>(yPoints));
+    resizeMesh2D(m_mesh, xPoints, yPoints);
 
     for (int i = 0; i < xPoints; ++i)
     {
@@ -139,27 +148,32 @@ void Grid3D::constructGridParams()
                     yPoints * zGridSpacing};
 }
 
+void resizeMesh3D(Mesh3D mesh, unsigned int xPoints, unsigned int yPoints, unsigned int zPoints)
+{
+    mesh.xMesh.resize(xPoints,
+                      vector2D_t(yPoints, std::vector<double>(zPoints)));
+    mesh.yMesh.resize(xPoints,
+                      vector2D_t(yPoints, std::vector<double>(zPoints)));
+    mesh.zMesh.resize(xPoints,
+                      vector2D_t(yPoints, std::vector<double>(zPoints)));
+    mesh.xFourierMesh.resize(
+            xPoints, vector2D_t(yPoints, std::vector<double>(zPoints)));
+    mesh.yFourierMesh.resize(
+            xPoints, vector2D_t(yPoints, std::vector<double>(zPoints)));
+    mesh.zFourierMesh.resize(
+            xPoints, vector2D_t(yPoints, std::vector<double>(zPoints)));
+    mesh.wavenumber.resize(xPoints,
+                           vector2D_t(yPoints, std::vector<double>(zPoints)));
+
+}
+
 void Grid3D::constructMesh()
 {
     auto [xPoints, yPoints, zPoints] = shape();
     auto [xGridSpacing, yGridSpacing, zGridSpacing] = gridSpacing();
     auto [xFourierGridSpacing, yFourierGridSpacing, zFourierGridSpacing] =
             fourierGridSpacing();
-
-    m_mesh.xMesh.resize(xPoints,
-                        vector2D_t(yPoints, std::vector<double>(zPoints)));
-    m_mesh.yMesh.resize(xPoints,
-                        vector2D_t(yPoints, std::vector<double>(zPoints)));
-    m_mesh.zMesh.resize(xPoints,
-                        vector2D_t(yPoints, std::vector<double>(zPoints)));
-    m_mesh.xFourierMesh.resize(
-            xPoints, vector2D_t(yPoints, std::vector<double>(zPoints)));
-    m_mesh.yFourierMesh.resize(
-            xPoints, vector2D_t(yPoints, std::vector<double>(zPoints)));
-    m_mesh.zFourierMesh.resize(
-            xPoints, vector2D_t(yPoints, std::vector<double>(zPoints)));
-    m_mesh.wavenumber.resize(xPoints,
-                             vector2D_t(yPoints, std::vector<double>(zPoints)));
+    resizeMesh3D(m_mesh, xPoints, yPoints, zPoints);
 
     for (int k = 0; k < zPoints; ++k)
     {
