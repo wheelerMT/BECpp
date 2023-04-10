@@ -8,6 +8,8 @@ set(INCLUDES include/constants.h include/grid.h)
 
 find_package(OpenMP REQUIRED)
 find_package(HDF5 REQUIRED)
+
+set(USE_BOOST OFF CACHE BOOL "Enable Boost Support")
 add_subdirectory(lib/HighFive)
 
 configure_file(cmake/downloadFindFFTW.cmake.in findFFTW-download/CMakeLists.txt)
