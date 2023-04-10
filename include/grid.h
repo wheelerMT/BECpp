@@ -13,15 +13,14 @@ class Grid
 protected:
     virtual void constructGridParams() = 0;
     virtual void constructMesh() = 0;
-    virtual void fftshift() = 0;
     virtual ~Grid() = default;
 };
 
 struct Mesh1D
 {
-    std::vector<double> m_xMesh{};
-    std::vector<double> m_xFourierMesh{};
-    std::vector<double> m_wavenumber{};
+    std::vector<double> xMesh{};
+    std::vector<double> xFourierMesh{};
+    std::vector<double> wavenumber{};
 };
 
 class Grid1D : public Grid
@@ -29,7 +28,6 @@ class Grid1D : public Grid
 private:
     void constructGridParams() override;
     void constructMesh() override;
-    void fftshift() override;
 
     const unsigned int m_gridPoints{};
     double m_gridSpacing{};
@@ -64,7 +62,6 @@ class Grid2D : public Grid
 private:
     void constructGridParams() override;
     void constructMesh() override;
-    void fftshift() override;
 
     const std::tuple<unsigned int, unsigned int> m_gridPoints{};
     const std::tuple<double, double> m_gridSpacing{};
@@ -102,7 +99,6 @@ class Grid3D : public Grid
 private:
     void constructGridParams() override;
     void constructMesh() override;
-    void fftshift() override;
 
     const std::tuple<unsigned int, unsigned int, unsigned int> m_gridPoints{};
     const std::tuple<double, double, double> m_gridSpacing{};
