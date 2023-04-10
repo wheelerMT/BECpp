@@ -8,9 +8,9 @@ set(INCLUDES include/constants.h include/grid.h)
 
 find_package(OpenMP REQUIRED)
 find_package(HDF5 REQUIRED)
-find_package(HighFive REQUIRED)
+add_subdirectory(lib/HighFive)
 
-configure_file(downloadFindFFTW.cmake.in findFFTW-download/CMakeLists.txt)
+configure_file(cmake/downloadFindFFTW.cmake.in findFFTW-download/CMakeLists.txt)
 execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" .
         RESULT_VARIABLE result
         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/findFFTW-download )
