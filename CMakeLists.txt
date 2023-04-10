@@ -10,6 +10,8 @@ find_package(OpenMP REQUIRED)
 find_package(HDF5 REQUIRED)
 
 set(USE_BOOST OFF CACHE BOOL "Enable Boost Support")
+option(HIGHFIVE_EXAMPLES "Compile examples" OFF)
+option(HIGHFIVE_BUILD_DOCS "Enable documentation building" OFF)
 add_subdirectory(lib/HighFive)
 
 configure_file(cmake/downloadFindFFTW.cmake.in findFFTW-download/CMakeLists.txt)
