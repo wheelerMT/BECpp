@@ -61,6 +61,11 @@ TEST_F(Grid2DTest, LengthSetCorrectly)
     ASSERT_EQ(yLength, 64);
 }
 
+TEST_F(Grid2DTest, WavenumberSetCorrectly)
+{
+    ASSERT_EQ(grid.wavenumber()[0][0], 0.0);
+}
+
 class Grid3DTest : public ::testing::Test
 {
 public:
@@ -100,4 +105,9 @@ TEST_F(Grid3DTest, LengthSetCorrectly)
     ASSERT_EQ(xLength, 32);
     ASSERT_EQ(yLength, 32);
     ASSERT_EQ(zLength, 32);
+}
+
+TEST_F(Grid3DTest, WavenumberSetCorrectly)
+{
+    ASSERT_EQ(grid.wavenumber()[0][0][0], 0.0);
 }

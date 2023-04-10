@@ -18,30 +18,25 @@ void Grid1D::constructGridParams()
 
 void Grid1D::constructMesh()
 {
-    m_mesh.m_xMesh.resize(m_gridPoints);
-    m_mesh.m_xFourierMesh.resize(m_gridPoints);
-    m_mesh.m_wavenumber.resize(m_gridPoints);
+    auto xPoints = shape();
+    auto xGridSpacing = gridSpacing();
+    auto xFourierGridSpacing = fourierGridSpacing();
+    m_mesh.xMesh.resize(xPoints);
+    m_mesh.xFourierMesh.resize(xPoints);
+    m_mesh.wavenumber.resize(xPoints);
 
-    for (int i = 0; i < m_gridPoints; ++i)
+    for (int i = 0; i < xPoints; ++i)
     {
-        m_mesh.m_xMesh[i] = (i - m_gridPoints / 2.) * m_gridSpacing;
-        m_mesh.m_xFourierMesh[i] =
-                (i - m_gridPoints / 2.) * m_fourierGridSpacing;
-    }
+        m_mesh.xMesh[i] = (i - xPoints / 2.) * xGridSpacing;
+        if (i < xPoints / 2)
+        {
+            m_mesh.xFourierMesh[i] = i * xFourierGridSpacing;
+        } else
+        {
+            m_mesh.xFourierMesh[i] = (i - xPoints) * xFourierGridSpacing;
+        }
 
-    // Shift the k-space grids, so they are in the right order
-    fftshift();
-}
-
-void Grid1D::fftshift()
-{
-    std::ranges::rotate(m_mesh.m_xFourierMesh.begin(),
-                        m_mesh.m_xFourierMesh.begin() + m_gridPoints / 2,
-                        m_mesh.m_xFourierMesh.end());
-
-    for (int i = 0; i < m_gridPoints; ++i)
-    {
-        m_mesh.m_wavenumber[i] = std::pow(m_mesh.m_xFourierMesh[i], 2);
+        m_mesh.wavenumber[i] = std::pow(m_mesh.xFourierMesh[i], 2);
     }
 }
 
@@ -53,7 +48,7 @@ double Grid1D::fourierGridSpacing() const { return m_fourierGridSpacing; }
 
 double Grid1D::gridLength() const { return m_length; }
 
-std::vector<double> Grid1D::wavenumber() const { return m_mesh.m_wavenumber; }
+std::vector<double> Grid1D::wavenumber() const { return m_mesh.wavenumber; }
 
 Grid2D::Grid2D(std::tuple<unsigned int, unsigned int> points,
                std::tuple<double, double> gridSpacing)
@@ -77,7 +72,7 @@ void Grid2D::constructMesh()
 {
     auto [xPoints, yPoints] = shape();
     auto [xGridSpacing, yGridSpacing] = gridSpacing();
-    auto[xFourierGridSpacing, yFourierGridSpacing] = fourierGridSpacing();
+    auto [xFourierGridSpacing, yFourierGridSpacing] = fourierGridSpacing();
 
     m_mesh.xMesh.resize(xPoints, std::vector<double>(yPoints));
     m_mesh.yMesh.resize(xPoints, std::vector<double>(yPoints));
@@ -90,21 +85,22 @@ void Grid2D::constructMesh()
         for (int j = 0; j < yPoints; ++j)
         {
             m_mesh.xMesh[i][j] = (j - xPoints / 2.) * xGridSpacing;
-            m_mesh.xFourierMesh[i][j] =
-                    (j - xPoints / 2.) * xFourierGridSpacing;
-            m_mesh.yMesh[j][i] = (j - yPoints / 2.) * yGridSpacing;
-            m_mesh.yFourierMesh[j][i] =
-                    (j - yPoints / 2.) * yFourierGridSpacing;
+            m_mesh.yMesh[i][j] = (j - yPoints / 2.) * yGridSpacing;
+            if (i < xPoints / 2)
+            {
+                m_mesh.xFourierMesh[i][j] = i * xFourierGridSpacing;
+                m_mesh.yFourierMesh[i][j] = j * yFourierGridSpacing;
+            } else
+            {
+                m_mesh.xFourierMesh[i][j] = (i - xPoints) * xFourierGridSpacing;
+                m_mesh.yFourierMesh[i][j] = (j - yPoints) * yFourierGridSpacing;
+            }
+
+            m_mesh.wavenumber[i][j] =
+                    std::pow(m_mesh.xFourierMesh[i][j], 2) +
+                    std::pow(m_mesh.yFourierMesh[i][j], 2);
         }
     }
-
-    // Shift the k-space grids, so they are in the right order
-    fftshift();
-}
-
-void Grid2D::fftshift()
-{
-    // To implement
 }
 
 std::tuple<unsigned int, unsigned int> Grid2D::shape() const
@@ -165,32 +161,38 @@ void Grid3D::constructMesh()
     m_mesh.wavenumber.resize(xPoints,
                              vector2D_t(yPoints, std::vector<double>(zPoints)));
 
-    for (int i = 0; i < xPoints; ++i)
+    for (int k = 0; k < zPoints; ++k)
     {
         for (int j = 0; j < yPoints; ++j)
         {
-            for (int k = 0; k < zPoints; ++k)
+            for (int i = 0; i < xPoints; ++i)
             {
-                m_mesh.xMesh[i][j][k] = (j - xPoints / 2.) * xGridSpacing;
-                m_mesh.xFourierMesh[i][j][k] =
-                        (j - xPoints / 2.) * xFourierGridSpacing;
-                m_mesh.yMesh[j][i][k] = (j - yPoints / 2.) * yGridSpacing;
-                m_mesh.yFourierMesh[j][i][k] =
-                        (j - yPoints / 2.) * yFourierGridSpacing;
-                m_mesh.zMesh[k][j][i] = (k - zPoints / 2.) * zGridSpacing;
-                m_mesh.zFourierMesh[k][j][i] =
-                        (k - zPoints / 2.) * zFourierGridSpacing;
+                m_mesh.xMesh[i][j][k] = (i - xPoints / 2.) * xGridSpacing;
+                m_mesh.yMesh[i][j][k] = (j - yPoints / 2.) * yGridSpacing;
+                m_mesh.zMesh[i][j][k] = (k - zPoints / 2.) * zGridSpacing;
+
+                if (i < xPoints / 2)
+                {
+                    m_mesh.xFourierMesh[i][j][k] = i * xFourierGridSpacing;
+                    m_mesh.yFourierMesh[i][j][k] = j * yFourierGridSpacing;
+                    m_mesh.zFourierMesh[i][j][k] = k * yFourierGridSpacing;
+                } else
+                {
+                    m_mesh.xFourierMesh[i][j][k] =
+                            (i - xPoints) * xFourierGridSpacing;
+                    m_mesh.yFourierMesh[i][j][k] =
+                            (j - yPoints) * yFourierGridSpacing;
+                    m_mesh.zFourierMesh[i][j][k] =
+                            (k - zPoints) * yFourierGridSpacing;
+                }
+
+                m_mesh.wavenumber[i][j][k] =
+                        std::pow(m_mesh.xFourierMesh[i][j][k], 2) +
+                        std::pow(m_mesh.yFourierMesh[i][j][k], 2) +
+                        std::pow(m_mesh.zFourierMesh[i][j][k], 2);
             }
         }
     }
-
-    // Shift the k-space grids, so they are in the right order
-    fftshift();
-}
-
-void Grid3D::fftshift()
-{
-    // TODO: Implement using std::rotate
 }
 
 std::tuple<unsigned int, unsigned int, unsigned int> Grid3D::shape() const
