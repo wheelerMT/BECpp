@@ -43,7 +43,6 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 target_link_libraries(${PROJECT_NAME}
         OpenMP::OpenMP_CXX
         hdf5::hdf5
-        HighFive
         FFTW::Double)
 
 enable_testing()
