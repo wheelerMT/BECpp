@@ -10,9 +10,8 @@ FETCHCONTENT_DECLARE(
 # For Windows: Prevent overriding the parent project's compiler/linker settings
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
-set(SOURCE_FILES test_grid.cpp)
 
-enable_testing()
+set(SOURCE_FILES test_grid.cpp test_wavefunction.cpp)
 include_directories(${PROJECT_SOURCE_DIR}/include)
 
 add_executable(tests
