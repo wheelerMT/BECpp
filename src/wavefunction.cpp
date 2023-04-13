@@ -56,15 +56,33 @@ std::vector<double> Wavefunction1D::density() const
 
 double Wavefunction1D::atomNumber() const { return m_atomNumber; }
 
-void Wavefunction1D::fft() const {
-    fftw_execute(m_plans.plan_forward);
-}
+void Wavefunction1D::fft() { fftw_execute(m_plans.plan_forward); }
 
-void Wavefunction1D::ifft() const {
-    fftw_execute(m_plans.plan_backward);
-}
-
-void Wavefunction1D::setComponent(std::vector<std::complex<double>> component)
+void Wavefunction1D::ifft()
 {
-    m_component = std::move(component);
+    fftw_execute(m_plans.plan_backward);
+
+    // Renormalise wavefunction
+    for (size_t i = 0; i < m_grid.shape(); i++)
+    {
+        m_component[i] /= m_grid.shape();
+    }
+}
+
+void Wavefunction1D::updateAtomNumber()
+{
+    for (size_t i = 0; i < m_grid.shape(); i++)
+    {
+        m_atomNumber +=
+                std::pow(std::abs(density()[i]), 2) * m_grid.gridSpacing();
+    }
+}
+
+void Wavefunction1D::setComponent(std::vector<std::complex<double>>& component)
+{
+    m_component = component;
+
+    // Update the Fourier-space wavefunction and atom number
+    fft();
+    updateAtomNumber();
 }

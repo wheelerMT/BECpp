@@ -28,6 +28,7 @@ private:
 
     void createFFTPlans(const Grid1D& grid);
     void destroyFFTPlans() const;
+    void updateAtomNumber();
 
 public:
     explicit Wavefunction1D(const Grid1D& grid);
@@ -38,9 +39,9 @@ public:
     [[nodiscard]] std::vector<double> density() const;
     [[nodiscard]] double atomNumber() const;
 
-    void fft() const;
-    void ifft() const;
-    void setComponent(std::vector<std::complex<double>> component);
+    void fft();
+    void ifft();
+    void setComponent(std::vector<std::complex<double>>& component);
 };
 
 #endif //BECPP_WAVEFUNCTION_H
