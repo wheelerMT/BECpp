@@ -1,15 +1,17 @@
 #ifndef BECPP_WAVEFUNCTION_H
 #define BECPP_WAVEFUNCTION_H
 
-#include <cmath>
-#include <complex>
-#include <string>
-#include <iostream>
-#include <random>
-#include <algorithm>
-#include "grid.h"
 #include "constants.h"
 #include "fftw3.h"
+#include "grid.h"
+#include <algorithm>
+#include <cmath>
+#include <complex>
+#include <iostream>
+#include <random>
+#include <string>
+
+using complexVector_t = std::vector<std::complex<double>>;
 
 struct FFTPlans
 {
@@ -22,26 +24,53 @@ class Wavefunction1D
 private:
     const Grid1D& m_grid;
     FFTPlans m_plans{};
-    std::vector<std::complex<double>> m_component{};
-    std::vector<std::complex<double>> m_fourierComponent{};
+    complexVector_t m_component{};
+    complexVector_t m_fourierComponent{};
     double m_atomNumber{};
 
     void createFFTPlans(const Grid1D& grid);
-    void destroyFFTPlans() const;
+    void destroyFFTPlans();
     void updateAtomNumber();
 
 public:
     explicit Wavefunction1D(const Grid1D& grid);
     ~Wavefunction1D();
 
-    [[nodiscard]] std::vector<std::complex<double>>& component();
-    [[nodiscard]] std::vector<std::complex<double>>& fourierComponent();
+    [[nodiscard]] complexVector_t& component();
+    [[nodiscard]] complexVector_t& fourierComponent();
     [[nodiscard]] std::vector<double> density() const;
     [[nodiscard]] double atomNumber() const;
 
     void fft();
     void ifft();
-    void setComponent(std::vector<std::complex<double>>& component);
+    void setComponent(complexVector_t& component);
 };
 
-#endif //BECPP_WAVEFUNCTION_H
+class Wavefunction2D
+{
+private:
+    const Grid2D& m_grid;
+    FFTPlans m_plans{};
+    complexVector_t m_component{};
+    complexVector_t m_fourierComponent{};
+    double m_atomNumber{};
+
+    void createFFTPlans(const Grid2D& grid);
+    void destroyFFTPlans();
+    void updateAtomNumber();
+
+public:
+    explicit Wavefunction2D(const Grid2D& grid);
+    ~Wavefunction2D();
+
+    [[nodiscard]] complexVector_t& component();
+    [[nodiscard]] complexVector_t& fourierComponent();
+    [[nodiscard]] std::vector<double> density() const;
+    [[nodiscard]] double atomNumber() const;
+
+    void fft();
+    void ifft();
+    void setComponent(complexVector_t& component);
+};
+
+#endif//BECPP_WAVEFUNCTION_H
