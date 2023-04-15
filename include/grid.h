@@ -26,17 +26,17 @@ private:
     void constructGridParams() override;
     void constructMesh() override;
 
-    const unsigned long m_gridPoints{};
+    const unsigned int m_gridPoints{};
     double m_gridSpacing{};
     double m_fourierGridSpacing{};
     double m_length{};
     Mesh1D m_mesh{};
 
 public:
-    Grid1D(unsigned long nx, double dx);
+    Grid1D(unsigned int nx, double dx);
     ~Grid1D() override = default;
 
-    [[nodiscard]] unsigned long shape() const;
+    [[nodiscard]] unsigned int shape() const;
     [[nodiscard]] double gridSpacing() const;
     [[nodiscard]] double fourierGridSpacing() const;
     [[nodiscard]] double gridLength() const;
@@ -60,18 +60,18 @@ private:
     void constructGridParams() override;
     void constructMesh() override;
 
-    const std::tuple<unsigned long, unsigned long> m_gridPoints{};
+    const std::tuple<unsigned int, unsigned int> m_gridPoints{};
     const std::tuple<double, double> m_gridSpacing{};
     std::tuple<double, double> m_fourierGridSpacing{};
     std::tuple<double, double> m_gridLength{};
     Mesh2D m_mesh{};
 
 public:
-    Grid2D(std::tuple<unsigned long, unsigned long> points,
+    Grid2D(std::tuple<unsigned int, unsigned int> points,
            std::tuple<double, double> gridSpacing);
     ~Grid2D() override = default;
 
-    [[nodiscard]] std::tuple<unsigned long, unsigned long> shape() const;
+    [[nodiscard]] std::tuple<unsigned int, unsigned int> shape() const;
     [[nodiscard]] std::tuple<double, double> gridSpacing() const;
     [[nodiscard]] std::tuple<double, double> fourierGridSpacing() const;
     [[nodiscard]] std::tuple<double, double> gridLength() const;
@@ -97,7 +97,7 @@ private:
     void constructGridParams() override;
     void constructMesh() override;
 
-    const std::tuple<unsigned long, unsigned long, unsigned long>
+    const std::tuple<unsigned int, unsigned int, unsigned int>
             m_gridPoints{};
     const std::tuple<double, double, double> m_gridSpacing{};
     std::tuple<double, double, double> m_fourierGridSpacing{};
@@ -105,11 +105,11 @@ private:
     Mesh3D m_mesh{};
 
 public:
-    Grid3D(std::tuple<unsigned long, unsigned long, unsigned long> points,
+    Grid3D(std::tuple<unsigned int, unsigned int, unsigned int> points,
            std::tuple<double, double, double> gridSpacing);
     ~Grid3D() override = default;
 
-    [[nodiscard]] std::tuple<unsigned long, unsigned long, unsigned long>
+    [[nodiscard]] std::tuple<unsigned int, unsigned int, unsigned int>
     shape() const;
     [[nodiscard]] std::tuple<double, double, double> gridSpacing() const;
     [[nodiscard]] std::tuple<double, double, double> fourierGridSpacing() const;

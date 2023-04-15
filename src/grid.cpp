@@ -4,8 +4,7 @@
 #include <cmath>
 #include <utility>
 
-Grid1D::Grid1D(unsigned long nx, double dx)
-    : m_gridPoints{nx}, m_gridSpacing{dx}
+Grid1D::Grid1D(unsigned int nx, double dx) : m_gridPoints{nx}, m_gridSpacing{dx}
 {
     Grid1D::constructGridParams();
     Grid1D::constructMesh();
@@ -17,7 +16,7 @@ void Grid1D::constructGridParams()
     m_length = m_gridPoints * m_gridSpacing;
 }
 
-void resizeMesh1D(Mesh1D& mesh, unsigned long xPoints)
+void resizeMesh1D(Mesh1D& mesh, unsigned int xPoints)
 {
     mesh.xMesh.resize(xPoints);
     mesh.xFourierMesh.resize(xPoints);
@@ -46,7 +45,7 @@ void Grid1D::constructMesh()
     }
 }
 
-unsigned long Grid1D::shape() const { return m_gridPoints; }
+unsigned int Grid1D::shape() const { return m_gridPoints; }
 
 double Grid1D::gridSpacing() const { return m_gridSpacing; }
 
@@ -56,7 +55,7 @@ double Grid1D::gridLength() const { return m_length; }
 
 std::vector<double> Grid1D::wavenumber() const { return m_mesh.wavenumber; }
 
-Grid2D::Grid2D(std::tuple<unsigned long, unsigned long> points,
+Grid2D::Grid2D(std::tuple<unsigned int, unsigned int> points,
                std::tuple<double, double> gridSpacing)
     : m_gridPoints{std::move(points)}, m_gridSpacing{std::move(gridSpacing)}
 {
@@ -74,7 +73,7 @@ void Grid2D::constructGridParams()
     m_gridLength = {xPoints * xGridSpacing, yPoints * yGridSpacing};
 }
 
-void resizeMesh2D(Mesh2D& mesh, unsigned long xPoints, unsigned long yPoints)
+void resizeMesh2D(Mesh2D& mesh, unsigned int xPoints, unsigned int yPoints)
 {
     mesh.xMesh.resize(xPoints * yPoints);
     mesh.yMesh.resize(xPoints * yPoints);
@@ -94,28 +93,28 @@ void Grid2D::constructMesh()
     {
         for (int j = 0; j < yPoints; ++j)
         {
-            m_mesh.xMesh[j + i * yPoints] = (j - xPoints / 2.) * xGridSpacing;
-            m_mesh.yMesh[j + i * yPoints] = (j - yPoints / 2.) * yGridSpacing;
+            auto index = j + i * yPoints;
+            m_mesh.xMesh[index] = (j - xPoints / 2.) * xGridSpacing;
+            m_mesh.yMesh[index] = (j - yPoints / 2.) * yGridSpacing;
             if (i < xPoints / 2)
             {
-                m_mesh.xFourierMesh[j + i * yPoints] = i * xFourierGridSpacing;
-                m_mesh.yFourierMesh[j + i * yPoints] = j * yFourierGridSpacing;
+                m_mesh.xFourierMesh[index] = i * xFourierGridSpacing;
+                m_mesh.yFourierMesh[index] = j * yFourierGridSpacing;
             } else
             {
-                m_mesh.xFourierMesh[j + i * yPoints] =
+                m_mesh.xFourierMesh[index] =
                         (i - xPoints) * xFourierGridSpacing;
-                m_mesh.yFourierMesh[j + i * yPoints] =
+                m_mesh.yFourierMesh[index] =
                         (j - yPoints) * yFourierGridSpacing;
             }
 
-            m_mesh.wavenumber[j + i * yPoints] =
-                    std::pow(m_mesh.xFourierMesh[j + i * yPoints], 2) +
-                    std::pow(m_mesh.yFourierMesh[j + i * yPoints], 2);
+            m_mesh.wavenumber[index] = std::pow(m_mesh.xFourierMesh[index], 2) +
+                                       std::pow(m_mesh.yFourierMesh[index], 2);
         }
     }
 }
 
-std::tuple<unsigned long, unsigned long> Grid2D::shape() const
+std::tuple<unsigned int, unsigned int> Grid2D::shape() const
 {
     return m_gridPoints;
 }
@@ -131,7 +130,7 @@ std::tuple<double, double> Grid2D::gridLength() const { return m_gridLength; }
 
 std::vector<double> Grid2D::wavenumber() const { return m_mesh.wavenumber; }
 
-Grid3D::Grid3D(std::tuple<unsigned long, unsigned long, unsigned long> points,
+Grid3D::Grid3D(std::tuple<unsigned int, unsigned int, unsigned int> points,
                std::tuple<double, double, double> gridSpacing)
     : m_gridPoints{std::move(points)}, m_gridSpacing{std::move(gridSpacing)}
 {
@@ -151,8 +150,8 @@ void Grid3D::constructGridParams()
                     yPoints * zGridSpacing};
 }
 
-void resizeMesh3D(Mesh3D& mesh, unsigned long xPoints, unsigned long yPoints,
-                  unsigned long zPoints)
+void resizeMesh3D(Mesh3D& mesh, unsigned int xPoints, unsigned int yPoints,
+                  unsigned int zPoints)
 {
     mesh.xMesh.resize(xPoints * yPoints * zPoints);
     mesh.yMesh.resize(xPoints * yPoints * zPoints);
@@ -177,44 +176,36 @@ void Grid3D::constructMesh()
         {
             for (int i = 0; i < xPoints; ++i)
             {
-                m_mesh.xMesh[k + zPoints * (j + yPoints * i)] =
-                        (i - xPoints / 2.) * xGridSpacing;
-                m_mesh.yMesh[k + zPoints * (j + yPoints * i)] =
-                        (j - yPoints / 2.) * yGridSpacing;
-                m_mesh.zMesh[k + zPoints * (j + yPoints * i)] =
-                        (k - zPoints / 2.) * zGridSpacing;
+                auto index = k + zPoints * (j + yPoints * i);
+                m_mesh.xMesh[index] = (i - xPoints / 2.) * xGridSpacing;
+                m_mesh.yMesh[index] = (j - yPoints / 2.) * yGridSpacing;
+                m_mesh.zMesh[index] = (k - zPoints / 2.) * zGridSpacing;
 
                 if (i < xPoints / 2)
                 {
-                    m_mesh.xFourierMesh[k + zPoints * (j + yPoints * i)] =
-                            i * xFourierGridSpacing;
-                    m_mesh.yFourierMesh[k + zPoints * (j + yPoints * i)] =
-                            j * yFourierGridSpacing;
-                    m_mesh.zFourierMesh[k + zPoints * (j + yPoints * i)] =
-                            k * yFourierGridSpacing;
+                    m_mesh.xFourierMesh[index] = i * xFourierGridSpacing;
+                    m_mesh.yFourierMesh[index] = j * yFourierGridSpacing;
+                    m_mesh.zFourierMesh[index] = k * yFourierGridSpacing;
                 } else
                 {
-                    m_mesh.xFourierMesh[k + zPoints * (j + yPoints * i)] =
+                    m_mesh.xFourierMesh[index] =
                             (i - xPoints) * xFourierGridSpacing;
-                    m_mesh.yFourierMesh[k + zPoints * (j + yPoints * i)] =
+                    m_mesh.yFourierMesh[index] =
                             (j - yPoints) * yFourierGridSpacing;
-                    m_mesh.zFourierMesh[k + zPoints * (j + yPoints * i)] =
+                    m_mesh.zFourierMesh[index] =
                             (k - zPoints) * yFourierGridSpacing;
                 }
 
-                m_mesh.wavenumber[k + zPoints * (j + yPoints * i)] =
-                        std::pow(m_mesh.xFourierMesh[k + zPoints * (j + yPoints * i)],
-                                 2) +
-                        std::pow(m_mesh.yFourierMesh[k + zPoints * (j + yPoints * i)],
-                                 2) +
-                        std::pow(m_mesh.zFourierMesh[k + zPoints * (j + yPoints * i)],
-                                 2);
+                m_mesh.wavenumber[index] =
+                        std::pow(m_mesh.xFourierMesh[index], 2) +
+                        std::pow(m_mesh.yFourierMesh[index], 2) +
+                        std::pow(m_mesh.zFourierMesh[index], 2);
             }
         }
     }
 }
 
-std::tuple<unsigned long, unsigned long, unsigned long> Grid3D::shape() const
+std::tuple<unsigned int, unsigned int, unsigned int> Grid3D::shape() const
 {
     return m_gridPoints;
 }
