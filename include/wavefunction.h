@@ -29,7 +29,7 @@ private:
     double m_atomNumber{};
 
     void createFFTPlans(const Grid1D& grid);
-    void destroyFFTPlans();
+    void destroyFFTPlans() const;
     void updateAtomNumber();
 
 public:
@@ -41,7 +41,7 @@ public:
     [[nodiscard]] std::vector<double> density() const;
     [[nodiscard]] double atomNumber() const;
 
-    void fft();
+    void fft() const;
     void ifft();
     void setComponent(complexVector_t& component);
 };
@@ -56,7 +56,7 @@ private:
     double m_atomNumber{};
 
     void createFFTPlans(const Grid2D& grid);
-    void destroyFFTPlans();
+    void destroyFFTPlans() const;
     void updateAtomNumber();
 
 public:
@@ -68,7 +68,7 @@ public:
     [[nodiscard]] std::vector<double> density() const;
     [[nodiscard]] double atomNumber() const;
 
-    void fft();
+    void fft() const;
     void ifft();
     void setComponent(complexVector_t& component);
 };

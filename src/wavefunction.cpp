@@ -1,7 +1,5 @@
 #include "wavefunction.h"
 
-#include <utility>
-
 Wavefunction1D::Wavefunction1D(const Grid1D& grid) : m_grid{grid}
 {
     m_component.resize(grid.shape());
@@ -26,16 +24,13 @@ void Wavefunction1D::createFFTPlans(const Grid1D& grid)
 
 Wavefunction1D::~Wavefunction1D() { destroyFFTPlans(); }
 
-void Wavefunction1D::destroyFFTPlans()
+void Wavefunction1D::destroyFFTPlans() const
 {
     fftw_destroy_plan(m_plans.plan_forward);
     fftw_destroy_plan(m_plans.plan_backward);
 }
 
-complexVector_t& Wavefunction1D::component()
-{
-    return m_component;
-}
+complexVector_t& Wavefunction1D::component() { return m_component; }
 
 complexVector_t& Wavefunction1D::fourierComponent()
 {
@@ -56,7 +51,7 @@ std::vector<double> Wavefunction1D::density() const
 
 double Wavefunction1D::atomNumber() const { return m_atomNumber; }
 
-void Wavefunction1D::fft() { fftw_execute(m_plans.plan_forward); }
+void Wavefunction1D::fft() const { fftw_execute(m_plans.plan_forward); }
 
 void Wavefunction1D::ifft()
 {
@@ -65,7 +60,7 @@ void Wavefunction1D::ifft()
     // Renormalise wavefunction
     for (size_t i = 0; i < m_grid.shape(); i++)
     {
-        m_component[i] /= m_grid.shape();
+        m_component[i] /= static_cast<double>(m_grid.shape());
     }
 }
 
@@ -113,16 +108,13 @@ void Wavefunction2D::createFFTPlans(const Grid2D& grid)
 
 Wavefunction2D::~Wavefunction2D() { destroyFFTPlans(); }
 
-void Wavefunction2D::destroyFFTPlans()
+void Wavefunction2D::destroyFFTPlans() const
 {
     fftw_destroy_plan(m_plans.plan_forward);
     fftw_destroy_plan(m_plans.plan_backward);
 }
 
-complexVector_t& Wavefunction2D::component()
-{
-    return m_component;
-}
+complexVector_t& Wavefunction2D::component() { return m_component; }
 
 complexVector_t& Wavefunction2D::fourierComponent()
 {
@@ -148,7 +140,7 @@ std::vector<double> Wavefunction2D::density() const
 
 double Wavefunction2D::atomNumber() const { return m_atomNumber; }
 
-void Wavefunction2D::fft() { fftw_execute(m_plans.plan_forward); }
+void Wavefunction2D::fft() const { fftw_execute(m_plans.plan_forward); }
 
 void Wavefunction2D::ifft()
 {
@@ -160,7 +152,8 @@ void Wavefunction2D::ifft()
     {
         for (size_t j = 0; j < yPoints; j++)
         {
-            m_component[j + i * yPoints] /= xPoints * yPoints;
+            m_component[j + i * yPoints] /=
+                    static_cast<double>(xPoints * yPoints);
         }
     }
 }
