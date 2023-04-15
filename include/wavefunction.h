@@ -73,4 +73,31 @@ public:
     void setComponent(complexVector_t& component);
 };
 
+class Wavefunction3D
+{
+private:
+    const Grid3D& m_grid;
+    FFTPlans m_plans{};
+    complexVector_t m_component{};
+    complexVector_t m_fourierComponent{};
+    double m_atomNumber{};
+
+    void createFFTPlans(const Grid3D& grid);
+    void destroyFFTPlans() const;
+    void updateAtomNumber();
+
+public:
+    explicit Wavefunction3D(const Grid3D& grid);
+    ~Wavefunction3D();
+
+    [[nodiscard]] complexVector_t& component();
+    [[nodiscard]] complexVector_t& fourierComponent();
+    [[nodiscard]] std::vector<double> density() const;
+    [[nodiscard]] double atomNumber() const;
+
+    void fft() const;
+    void ifft();
+    void setComponent(complexVector_t& component);
+};
+
 #endif//BECPP_WAVEFUNCTION_H

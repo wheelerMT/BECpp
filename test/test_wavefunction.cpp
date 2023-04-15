@@ -1,7 +1,7 @@
 #include "wavefunction.h"
 #include <gtest/gtest.h>
 
-constexpr auto GRID_LENGTH = 64L;
+constexpr auto GRID_LENGTH = 16;
 constexpr auto GRID_SPACING = 0.5;
 
 class Wavefunction1DTest : public ::testing::Test
@@ -39,7 +39,7 @@ TEST_F(Wavefunction1DTest, DensityCorrect)
     initialState.resize(GRID_LENGTH, {1.0, 0.0});
     wavefunction.setComponent(initialState);
 
-    for (size_t i = 0; i < GRID_LENGTH; i++)
+    for (int i = 0; i < GRID_LENGTH; i++)
     {
         ASSERT_EQ(wavefunction.density()[i], 1.0);
     }
@@ -91,9 +91,10 @@ TEST_F(Wavefunction2DTest, SetComponentCorrect)
     wavefunction.setComponent(initialState);
     for (int i = 0; i < GRID_LENGTH; ++i)
     {
-        for (size_t j = 0; j < GRID_LENGTH; j++)
+        for (int j = 0; j < GRID_LENGTH; ++j)
         {
-            ASSERT_EQ(wavefunction.component()[j + i * GRID_LENGTH], real);
+            auto index = j + i * GRID_LENGTH;
+            ASSERT_EQ(wavefunction.component()[index], real);
         }
     }
 }
@@ -116,9 +117,10 @@ TEST_F(Wavefunction2DTest, DensityCorrect)
 
     for (int i = 0; i < GRID_LENGTH; ++i)
     {
-        for (size_t j = 0; j < GRID_LENGTH; j++)
+        for (int j = 0; j < GRID_LENGTH; ++j)
         {
-            ASSERT_EQ(wavefunction.density()[j + i * GRID_LENGTH], 1.0);
+            auto index = j + i * GRID_LENGTH;
+            ASSERT_EQ(wavefunction.density()[index], 1.0);
         }
     }
 }
@@ -134,10 +136,10 @@ TEST_F(Wavefunction2DTest, SameWavefunctionAfterFFT)
 
     for (int i = 0; i < GRID_LENGTH; ++i)
     {
-        for (size_t j = 0; j < GRID_LENGTH; j++)
+        for (int j = 0; j < GRID_LENGTH; ++j)
         {
-            ASSERT_EQ(initialState[j + i * GRID_LENGTH],
-                      wavefunction.component()[j + i * GRID_LENGTH]);
+            auto index = j + i * GRID_LENGTH;
+            ASSERT_EQ(initialState[index], wavefunction.component()[index]);
         }
     }
 }
@@ -146,6 +148,101 @@ TEST_F(Wavefunction2DTest, FourierSpaceWavefunctionUpdated)
 {
     std::vector<std::complex<double>> initialState{};
     initialState.resize(GRID_LENGTH * GRID_LENGTH, {1.0, 2.0});
+    wavefunction.setComponent(initialState);
+
+    std::complex<double> zero{0.0, 0.0};
+
+    // Sufficient to check one element non-zero
+    wavefunction.fft();
+    ASSERT_NE(zero, wavefunction.fourierComponent()[0]);
+}
+
+class Wavefunction3DTest : public ::testing::Test
+{
+public:
+    std::tuple<unsigned long, unsigned long, unsigned long> points{
+            GRID_LENGTH, GRID_LENGTH, GRID_LENGTH};
+    std::tuple<double, double, double> spacing{GRID_SPACING, GRID_SPACING,
+                                               GRID_SPACING};
+    Grid3D grid{points, spacing};
+    Wavefunction3D wavefunction{grid};
+};
+
+TEST_F(Wavefunction3DTest, SetComponentCorrect)
+{
+    std::vector<std::complex<double>> initialState{};
+    std::complex<double> real{1.0, 0.0};
+    initialState.resize(GRID_LENGTH * GRID_LENGTH * GRID_LENGTH, real);
+
+    wavefunction.setComponent(initialState);
+    for (int i = 0; i < GRID_LENGTH; ++i)
+    {
+        for (int j = 0; j < GRID_LENGTH; ++j)
+        {
+            for (int k = 0; k < GRID_LENGTH; ++k)
+            {
+                auto index = k + GRID_LENGTH * (j + i * GRID_LENGTH);
+                ASSERT_EQ(wavefunction.component()[index], real);
+            }
+        }
+    }
+}
+
+TEST_F(Wavefunction3DTest, AtomNumberCorrect)
+{
+    std::vector<std::complex<double>> initialState{};
+    initialState.resize(GRID_LENGTH * GRID_LENGTH * GRID_LENGTH, {1.0, 0.0});
+    wavefunction.setComponent(initialState);
+
+    double atomNumber = std::pow(GRID_LENGTH, 3) * std::pow(GRID_SPACING, 3);
+    ASSERT_EQ(atomNumber, wavefunction.atomNumber());
+}
+
+TEST_F(Wavefunction3DTest, DensityCorrect)
+{
+    complexVector_t initialState{};
+    initialState.resize(GRID_LENGTH * GRID_LENGTH * GRID_LENGTH, {1.0, 0.0});
+    wavefunction.setComponent(initialState);
+
+    for (int i = 0; i < GRID_LENGTH; ++i)
+    {
+        for (int j = 0; j < GRID_LENGTH; ++j)
+        {
+            for (int k = 0; k < GRID_LENGTH; ++k)
+            {
+                auto index = k + GRID_LENGTH * (j + i * GRID_LENGTH);
+                ASSERT_EQ(wavefunction.density()[index], 1.0);
+            }
+        }
+    }
+}
+
+TEST_F(Wavefunction3DTest, SameWavefunctionAfterFFT)
+{
+    std::vector<std::complex<double>> initialState{};
+    initialState.resize(GRID_LENGTH * GRID_LENGTH * GRID_LENGTH, {1.0, 0.0});
+    wavefunction.setComponent(initialState);
+
+    wavefunction.fft();
+    wavefunction.ifft();
+
+    for (int i = 0; i < GRID_LENGTH; ++i)
+    {
+        for (int j = 0; j < GRID_LENGTH; ++j)
+        {
+            for (int k = 0; k < GRID_LENGTH; ++k)
+            {
+                auto index = k + GRID_LENGTH * (j + i * GRID_LENGTH);
+                ASSERT_EQ(initialState[index], wavefunction.component()[index]);
+            }
+        }
+    }
+}
+
+TEST_F(Wavefunction3DTest, FourierSpaceWavefunctionUpdated)
+{
+    std::vector<std::complex<double>> initialState{};
+    initialState.resize(GRID_LENGTH * GRID_LENGTH * GRID_LENGTH, {1.0, 2.0});
     wavefunction.setComponent(initialState);
 
     std::complex<double> zero{0.0, 0.0};
