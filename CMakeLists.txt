@@ -3,8 +3,8 @@ project(BECpp)
 
 set(CMAKE_CXX_STANDARD 20)
 
-set(SOURCES src/grid.cpp)
-set(INCLUDES include/constants.h include/grid.h)
+set(SOURCES src/grid.cpp src/wavefunction.cpp)
+set(INCLUDES include/constants.h include/grid.h include/wavefunction.h)
 
 find_package(OpenMP REQUIRED)
 find_package(HDF5 REQUIRED)
@@ -37,11 +37,13 @@ find_package(FFTW REQUIRED)
 add_library(${PROJECT_NAME} STATIC ${SOURCES} ${INCLUDES})
 
 target_include_directories(${PROJECT_NAME} PRIVATE
-        ${PROJECT_SOURCE_DIR}/include/)
+        ${PROJECT_SOURCE_DIR}/include/
+        FFTW_INCLUDE_DIRS)
+
 target_link_libraries(${PROJECT_NAME}
         OpenMP::OpenMP_CXX
         hdf5::hdf5
-        HighFive)
+        FFTW::Double)
 
 enable_testing()
 add_subdirectory(test)

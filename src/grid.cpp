@@ -75,11 +75,11 @@ void Grid2D::constructGridParams()
 
 void resizeMesh2D(Mesh2D& mesh, unsigned int xPoints, unsigned int yPoints)
 {
-    mesh.xMesh.resize(xPoints, std::vector<double>(yPoints));
-    mesh.yMesh.resize(xPoints, std::vector<double>(yPoints));
-    mesh.xFourierMesh.resize(xPoints, std::vector<double>(yPoints));
-    mesh.yFourierMesh.resize(xPoints, std::vector<double>(yPoints));
-    mesh.wavenumber.resize(xPoints, std::vector<double>(yPoints));
+    mesh.xMesh.resize(xPoints * yPoints);
+    mesh.yMesh.resize(xPoints * yPoints);
+    mesh.xFourierMesh.resize(xPoints * yPoints);
+    mesh.yFourierMesh.resize(xPoints * yPoints);
+    mesh.wavenumber.resize(xPoints * yPoints);
 }
 
 void Grid2D::constructMesh()
@@ -93,21 +93,23 @@ void Grid2D::constructMesh()
     {
         for (int j = 0; j < yPoints; ++j)
         {
-            m_mesh.xMesh[i][j] = (j - xPoints / 2.) * xGridSpacing;
-            m_mesh.yMesh[i][j] = (j - yPoints / 2.) * yGridSpacing;
+            auto index = j + i * yPoints;
+            m_mesh.xMesh[index] = (j - xPoints / 2.) * xGridSpacing;
+            m_mesh.yMesh[index] = (j - yPoints / 2.) * yGridSpacing;
             if (i < xPoints / 2)
             {
-                m_mesh.xFourierMesh[i][j] = i * xFourierGridSpacing;
-                m_mesh.yFourierMesh[i][j] = j * yFourierGridSpacing;
+                m_mesh.xFourierMesh[index] = i * xFourierGridSpacing;
+                m_mesh.yFourierMesh[index] = j * yFourierGridSpacing;
             } else
             {
-                m_mesh.xFourierMesh[i][j] = (i - xPoints) * xFourierGridSpacing;
-                m_mesh.yFourierMesh[i][j] = (j - yPoints) * yFourierGridSpacing;
+                m_mesh.xFourierMesh[index] =
+                        (i - xPoints) * xFourierGridSpacing;
+                m_mesh.yFourierMesh[index] =
+                        (j - yPoints) * yFourierGridSpacing;
             }
 
-            m_mesh.wavenumber[i][j] =
-                    std::pow(m_mesh.xFourierMesh[i][j], 2) +
-                    std::pow(m_mesh.yFourierMesh[i][j], 2);
+            m_mesh.wavenumber[index] = std::pow(m_mesh.xFourierMesh[index], 2) +
+                                       std::pow(m_mesh.yFourierMesh[index], 2);
         }
     }
 }
@@ -126,7 +128,7 @@ std::tuple<double, double> Grid2D::fourierGridSpacing() const
 
 std::tuple<double, double> Grid2D::gridLength() const { return m_gridLength; }
 
-vector2D_t Grid2D::wavenumber() const { return m_mesh.wavenumber; }
+std::vector<double> Grid2D::wavenumber() const { return m_mesh.wavenumber; }
 
 Grid3D::Grid3D(std::tuple<unsigned int, unsigned int, unsigned int> points,
                std::tuple<double, double, double> gridSpacing)
@@ -148,23 +150,16 @@ void Grid3D::constructGridParams()
                     yPoints * zGridSpacing};
 }
 
-void resizeMesh3D(Mesh3D& mesh, unsigned int xPoints, unsigned int yPoints, unsigned int zPoints)
+void resizeMesh3D(Mesh3D& mesh, unsigned int xPoints, unsigned int yPoints,
+                  unsigned int zPoints)
 {
-    mesh.xMesh.resize(xPoints,
-                      vector2D_t(yPoints, std::vector<double>(zPoints)));
-    mesh.yMesh.resize(xPoints,
-                      vector2D_t(yPoints, std::vector<double>(zPoints)));
-    mesh.zMesh.resize(xPoints,
-                      vector2D_t(yPoints, std::vector<double>(zPoints)));
-    mesh.xFourierMesh.resize(
-            xPoints, vector2D_t(yPoints, std::vector<double>(zPoints)));
-    mesh.yFourierMesh.resize(
-            xPoints, vector2D_t(yPoints, std::vector<double>(zPoints)));
-    mesh.zFourierMesh.resize(
-            xPoints, vector2D_t(yPoints, std::vector<double>(zPoints)));
-    mesh.wavenumber.resize(xPoints,
-                           vector2D_t(yPoints, std::vector<double>(zPoints)));
-
+    mesh.xMesh.resize(xPoints * yPoints * zPoints);
+    mesh.yMesh.resize(xPoints * yPoints * zPoints);
+    mesh.zMesh.resize(xPoints * yPoints * zPoints);
+    mesh.xFourierMesh.resize(xPoints * yPoints * zPoints);
+    mesh.yFourierMesh.resize(xPoints * yPoints * zPoints);
+    mesh.zFourierMesh.resize(xPoints * yPoints * zPoints);
+    mesh.wavenumber.resize(xPoints * yPoints * zPoints);
 }
 
 void Grid3D::constructMesh()
@@ -181,29 +176,30 @@ void Grid3D::constructMesh()
         {
             for (int i = 0; i < xPoints; ++i)
             {
-                m_mesh.xMesh[i][j][k] = (i - xPoints / 2.) * xGridSpacing;
-                m_mesh.yMesh[i][j][k] = (j - yPoints / 2.) * yGridSpacing;
-                m_mesh.zMesh[i][j][k] = (k - zPoints / 2.) * zGridSpacing;
+                auto index = k + zPoints * (j + yPoints * i);
+                m_mesh.xMesh[index] = (i - xPoints / 2.) * xGridSpacing;
+                m_mesh.yMesh[index] = (j - yPoints / 2.) * yGridSpacing;
+                m_mesh.zMesh[index] = (k - zPoints / 2.) * zGridSpacing;
 
                 if (i < xPoints / 2)
                 {
-                    m_mesh.xFourierMesh[i][j][k] = i * xFourierGridSpacing;
-                    m_mesh.yFourierMesh[i][j][k] = j * yFourierGridSpacing;
-                    m_mesh.zFourierMesh[i][j][k] = k * yFourierGridSpacing;
+                    m_mesh.xFourierMesh[index] = i * xFourierGridSpacing;
+                    m_mesh.yFourierMesh[index] = j * yFourierGridSpacing;
+                    m_mesh.zFourierMesh[index] = k * yFourierGridSpacing;
                 } else
                 {
-                    m_mesh.xFourierMesh[i][j][k] =
+                    m_mesh.xFourierMesh[index] =
                             (i - xPoints) * xFourierGridSpacing;
-                    m_mesh.yFourierMesh[i][j][k] =
+                    m_mesh.yFourierMesh[index] =
                             (j - yPoints) * yFourierGridSpacing;
-                    m_mesh.zFourierMesh[i][j][k] =
+                    m_mesh.zFourierMesh[index] =
                             (k - zPoints) * yFourierGridSpacing;
                 }
 
-                m_mesh.wavenumber[i][j][k] =
-                        std::pow(m_mesh.xFourierMesh[i][j][k], 2) +
-                        std::pow(m_mesh.yFourierMesh[i][j][k], 2) +
-                        std::pow(m_mesh.zFourierMesh[i][j][k], 2);
+                m_mesh.wavenumber[index] =
+                        std::pow(m_mesh.xFourierMesh[index], 2) +
+                        std::pow(m_mesh.yFourierMesh[index], 2) +
+                        std::pow(m_mesh.zFourierMesh[index], 2);
             }
         }
     }
@@ -229,4 +225,4 @@ std::tuple<double, double, double> Grid3D::gridLength() const
     return m_gridLength;
 }
 
-vector3D_t Grid3D::wavenumber() const { return m_mesh.wavenumber; }
+std::vector<double> Grid3D::wavenumber() const { return m_mesh.wavenumber; }

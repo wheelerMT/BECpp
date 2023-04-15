@@ -31,9 +31,14 @@
 *.out
 *.app
 
+# Files
+CMakeSettings.json
+
 # Ignored directories
 cmake-build-debug
 cmake-build-debug-coverage
 .idea
 data
 python_tests
+.vs
+out/build
