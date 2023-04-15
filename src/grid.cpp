@@ -177,40 +177,37 @@ void Grid3D::constructMesh()
         {
             for (int i = 0; i < xPoints; ++i)
             {
-                m_mesh.xMesh[k + j * xPoints + i * yPoints] =
+                m_mesh.xMesh[k + zPoints * (j + yPoints * i)] =
                         (i - xPoints / 2.) * xGridSpacing;
-                m_mesh.yMesh[k + j * xPoints + i * yPoints] =
+                m_mesh.yMesh[k + zPoints * (j + yPoints * i)] =
                         (j - yPoints / 2.) * yGridSpacing;
-                m_mesh.zMesh[k + j * xPoints + i * yPoints] =
+                m_mesh.zMesh[k + zPoints * (j + yPoints * i)] =
                         (k - zPoints / 2.) * zGridSpacing;
 
                 if (i < xPoints / 2)
                 {
-                    m_mesh.xFourierMesh[k + j * xPoints + i * yPoints] =
+                    m_mesh.xFourierMesh[k + zPoints * (j + yPoints * i)] =
                             i * xFourierGridSpacing;
-                    m_mesh.yFourierMesh[k + j * xPoints + i * yPoints] =
+                    m_mesh.yFourierMesh[k + zPoints * (j + yPoints * i)] =
                             j * yFourierGridSpacing;
-                    m_mesh.zFourierMesh[k + j * xPoints + i * yPoints] =
+                    m_mesh.zFourierMesh[k + zPoints * (j + yPoints * i)] =
                             k * yFourierGridSpacing;
                 } else
                 {
-                    m_mesh.xFourierMesh[k + j * xPoints + i * yPoints] =
+                    m_mesh.xFourierMesh[k + zPoints * (j + yPoints * i)] =
                             (i - xPoints) * xFourierGridSpacing;
-                    m_mesh.yFourierMesh[k + j * xPoints + i * yPoints] =
+                    m_mesh.yFourierMesh[k + zPoints * (j + yPoints * i)] =
                             (j - yPoints) * yFourierGridSpacing;
-                    m_mesh.zFourierMesh[k + j * xPoints + i * yPoints] =
+                    m_mesh.zFourierMesh[k + zPoints * (j + yPoints * i)] =
                             (k - zPoints) * yFourierGridSpacing;
                 }
 
-                m_mesh.wavenumber[k + j * xPoints + i * yPoints] =
-                        std::pow(m_mesh.xFourierMesh[k + j * xPoints +
-                                                     i * yPoints],
+                m_mesh.wavenumber[k + zPoints * (j + yPoints * i)] =
+                        std::pow(m_mesh.xFourierMesh[k + zPoints * (j + yPoints * i)],
                                  2) +
-                        std::pow(m_mesh.yFourierMesh[k + j * xPoints +
-                                                     i * yPoints],
+                        std::pow(m_mesh.yFourierMesh[k + zPoints * (j + yPoints * i)],
                                  2) +
-                        std::pow(m_mesh.zFourierMesh[k + j * xPoints +
-                                                     i * yPoints],
+                        std::pow(m_mesh.zFourierMesh[k + zPoints * (j + yPoints * i)],
                                  2);
             }
         }
