@@ -20,7 +20,7 @@ struct Parameters
 class DataManager1D
 {
 private:
-    unsigned int saveIndex{0};
+    unsigned int m_saveIndex{0};
 
     void saveParameters(const Parameters &params, const Grid1D &grid);
     void generateWavefunctionDatasets(const Grid1D &grid);
@@ -34,5 +34,20 @@ public:
     HighFive::File file;
 };
 
+class DataManager2D
+{
+private:
+    unsigned int m_saveIndex{0};
+
+    void saveParameters(const Parameters &params, const Grid2D &grid);
+    void generateWavefunctionDatasets(const Grid2D &grid);
+
+public:
+    DataManager2D(const std::string &filename, const Parameters &params, const Grid2D &grid);
+    void saveWavefunctionData(Wavefunction2D &psi);
+
+    std::string filename;
+    HighFive::File file;
+};
 
 #endif //BECPP_DATA_H
