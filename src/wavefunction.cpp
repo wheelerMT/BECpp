@@ -66,10 +66,10 @@ void Wavefunction1D::ifft()
 
 void Wavefunction1D::updateAtomNumber()
 {
+    std::vector<double> dens = density();
     for (int i = 0; i < m_grid.shape(); ++i)
     {
-        m_atomNumber +=
-                std::pow(std::abs(density()[i]), 2) * m_grid.gridSpacing();
+        m_atomNumber += std::pow(std::abs(dens[i]), 2) * m_grid.gridSpacing();
     }
 }
 
@@ -126,6 +126,7 @@ std::vector<double> Wavefunction2D::density() const
     std::vector<double> density{};
     auto [xPoints, yPoints] = m_grid.shape();
     density.resize(xPoints * yPoints);
+
     for (int i = 0; i < xPoints; ++i)
     {
         for (int j = 0; j < yPoints; ++j)
@@ -148,6 +149,7 @@ void Wavefunction2D::ifft()
 
     // Renormalise wavefunction
     auto [xPoints, yPoints] = m_grid.shape();
+
     for (int i = 0; i < xPoints; ++i)
     {
         for (int j = 0; j < yPoints; ++j)
@@ -162,11 +164,13 @@ void Wavefunction2D::updateAtomNumber()
 {
     auto [xPoints, yPoints] = m_grid.shape();
     auto [xGridSpacing, yGridSpacing] = m_grid.gridSpacing();
+    std::vector<double> dens = density();
+
     for (int i = 0; i < xPoints; ++i)
     {
         for (int j = 0; j < yPoints; ++j)
         {
-            m_atomNumber += std::pow(std::abs(density()[j + i * yPoints]), 2) *
+            m_atomNumber += std::pow(std::abs(dens[j + i * yPoints]), 2) *
                             xGridSpacing * yGridSpacing;
         }
     }
@@ -227,6 +231,7 @@ std::vector<double> Wavefunction3D::density() const
     std::vector<double> density{};
     auto [xPoints, yPoints, zPoints] = m_grid.shape();
     density.resize(xPoints * yPoints * zPoints);
+
     for (int i = 0; i < xPoints; ++i)
     {
         for (int j = 0; j < yPoints; ++j)
@@ -253,6 +258,7 @@ void Wavefunction3D::ifft()
     // Renormalise wavefunction
     auto [xPoints, yPoints, zPoints] = m_grid.shape();
     auto n = static_cast<double>(xPoints * yPoints * zPoints);
+
     for (int i = 0; i < xPoints; ++i)
     {
         for (int j = 0; j < yPoints; ++j)
@@ -270,6 +276,8 @@ void Wavefunction3D::updateAtomNumber()
 {
     auto [xPoints, yPoints, zPoints] = m_grid.shape();
     auto [xGridSpacing, yGridSpacing, zGridSpacing] = m_grid.gridSpacing();
+    std::vector<double> dens = density();
+
     for (int i = 0; i < xPoints; ++i)
     {
         for (int j = 0; j < yPoints; ++j)
@@ -277,7 +285,7 @@ void Wavefunction3D::updateAtomNumber()
             for (int k = 0; k < zPoints; ++k)
             {
                 auto index = k + zPoints * (j + yPoints * i);
-                m_atomNumber += std::pow(std::abs(density()[index]), 2) *
+                m_atomNumber += std::pow(std::abs(dens[index]), 2) *
                                 xGridSpacing * yGridSpacing * zGridSpacing;
             }
         }

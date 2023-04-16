@@ -38,10 +38,11 @@ TEST_F(Wavefunction1DTest, DensityCorrect)
     std::vector<std::complex<double>> initialState{};
     initialState.resize(GRID_LENGTH, {1.0, 0.0});
     wavefunction.setComponent(initialState);
+    std::vector<double> density = wavefunction.density();
 
     for (int i = 0; i < GRID_LENGTH; i++)
     {
-        ASSERT_EQ(wavefunction.density()[i], 1.0);
+        ASSERT_EQ(density[i], 1.0);
     }
 }
 
@@ -114,13 +115,14 @@ TEST_F(Wavefunction2DTest, DensityCorrect)
     complexVector_t initialState{};
     initialState.resize(GRID_LENGTH * GRID_LENGTH, {1.0, 0.0});
     wavefunction.setComponent(initialState);
+    std::vector<double> density = wavefunction.density();
 
     for (int i = 0; i < GRID_LENGTH; ++i)
     {
         for (int j = 0; j < GRID_LENGTH; ++j)
         {
             auto index = j + i * GRID_LENGTH;
-            ASSERT_EQ(wavefunction.density()[index], 1.0);
+            ASSERT_EQ(density[index], 1.0);
         }
     }
 }
@@ -203,6 +205,7 @@ TEST_F(Wavefunction3DTest, DensityCorrect)
     complexVector_t initialState{};
     initialState.resize(GRID_LENGTH * GRID_LENGTH * GRID_LENGTH, {1.0, 0.0});
     wavefunction.setComponent(initialState);
+    std::vector<double> density = wavefunction.density();
 
     for (int i = 0; i < GRID_LENGTH; ++i)
     {
@@ -211,7 +214,7 @@ TEST_F(Wavefunction3DTest, DensityCorrect)
             for (int k = 0; k < GRID_LENGTH; ++k)
             {
                 auto index = k + GRID_LENGTH * (j + i * GRID_LENGTH);
-                ASSERT_EQ(wavefunction.density()[index], 1.0);
+                ASSERT_EQ(density[index], 1.0);
             }
         }
     }
