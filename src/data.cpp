@@ -1,91 +1,186 @@
-//
-// Created by mattw on 06/01/2022.
-//
-
 #include "data.h"
 
-Parameters::Parameters(double c0, double c2, double p, double q, int nt, int nframe, double dt)
-        : c0{c0}, c2{c2}, p{p}, q{q}, nt{nt}, nframe{nframe}, dt{dt, 0}
+DataManager1D::DataManager1D(const std::string& filename,
+                             const Parameters& params, const Grid1D& grid)
+    : filename{filename},
+      file{filename, HighFive::File::ReadWrite | HighFive::File::Create |
+                             HighFive::File::Truncate}
 {
+    saveParameters(params, grid);
+    generateWavefunctionDatasets(grid);
 }
 
-void Parameters::imaginary_time(const std::string &toggle)
-{
-    assert(toggle == "on" or toggle == "off"); // Check correct toggle string is passed
-    if (toggle == "on") dt *= std::complex<double>{0, -1};
-    else if (toggle == "off") dt /= std::complex<double>{0, -1};
-}
-
-DataManager::DataManager(const std::string &filename, const Parameters &params, const Grid2D &grid) :
-        filename{filename},
-        file{filename, HighFive::File::ReadWrite | HighFive::File::Create | HighFive::File::Truncate}
-{
-    save_parameters(params, grid);
-    generate_wfn_datasets(grid);
-
-}
-
-void DataManager::save_parameters(const Parameters &params, const Grid2D &grid)
+void DataManager1D::saveParameters(const Parameters& params, const Grid1D& grid)
 {
     // Save condensate and time parameters to file
-    file.createDataSet("/parameters/c0", params.c0);
-    file.createDataSet("/parameters/c2", params.c2);
-    file.createDataSet("/time/nt", params.nt);
-    file.createDataSet("/time/nframe", params.nframe);
-    file.createDataSet("/time/dt", params.dt.real());
+    file.createDataSet("/parameters/intStrength", params.intStrength);
+    file.createDataSet("/parameters/numTimeSteps", params.numTimeSteps);
+    file.createDataSet("/parameters/dt", params.timeStep);
 
     // Save grid parameters to file
-    file.createDataSet("/grid/m_xPoints", grid.m_xPoints);
-    file.createDataSet("/grid/m_yPoints", grid.m_yPoints);
-    file.createDataSet("/grid/m_xGridSpacing", grid.m_xGridSpacing);
-    file.createDataSet("/grid/m_yGridSpacing", grid.m_yGridSpacing);
-
+    file.createDataSet("/grid/xPoints", grid.shape());
+    file.createDataSet("/grid/xGridSpacing", grid.gridSpacing());
 }
 
-void DataManager::generate_wfn_datasets(const Grid2D &grid)
+void DataManager1D::generateWavefunctionDatasets(const Grid1D& grid)
 {
-    // Define dataspaces with arbitrary length of last dimension
-    HighFive::DataSpace ds_plus = HighFive::DataSpace({grid.m_xPoints * grid.m_yPoints, 1},
-                                                      {grid.m_xPoints * grid.m_yPoints, HighFive::DataSpace::UNLIMITED});
-    HighFive::DataSpace ds_zero = HighFive::DataSpace({grid.m_xPoints * grid.m_yPoints, 1},
-                                                      {grid.m_xPoints * grid.m_yPoints, HighFive::DataSpace::UNLIMITED});
-    HighFive::DataSpace ds_minus = HighFive::DataSpace({grid.m_xPoints * grid.m_yPoints, 1},
-                                                       {grid.m_xPoints * grid.m_yPoints, HighFive::DataSpace::UNLIMITED});
+    // Define data space with arbitrary length of last dimension
+    HighFive::DataSpace dsWavefunction = HighFive::DataSpace(
+            {grid.shape(), 1}, {grid.shape(), HighFive::DataSpace::UNLIMITED});
 
     // Use chunking
     HighFive::DataSetCreateProps props;
-    props.add(HighFive::Chunking(std::vector<hsize_t>{(grid.m_xPoints * grid.m_yPoints) / 4, 1}));
+    props.add(HighFive::Chunking(std::vector<hsize_t>{(grid.shape()) / 4, 1}));
 
-    // Create wavefunction datasets
-    file.createDataSet("/wavefunction/psi_plus", ds_plus,
+    // Create wavefunction dataset
+    file.createDataSet("wavefunction", dsWavefunction,
                        HighFive::AtomicType<std::complex<double>>(), props);
-    file.createDataSet("/wavefunction/psi_zero", ds_zero,
-                       HighFive::AtomicType<std::complex<double>>(), props);
-    file.createDataSet("/wavefunction/psi_minus", ds_minus,
-                       HighFive::AtomicType<std::complex<double>>(), props);
-
 }
 
-void DataManager::save_wavefunction_data(Wavefunction2D &psi)
+void DataManager1D::saveWavefunctionData(Wavefunction1D& wfn)
 {
     // Load in datasets
-    HighFive::DataSet ds_plus = file.getDataSet("/wavefunction/psi_plus");
-    HighFive::DataSet ds_zero = file.getDataSet("/wavefunction/psi_zero");
-    HighFive::DataSet ds_minus = file.getDataSet("/wavefunction/psi_minus");
+    HighFive::DataSet dsWavefunction = file.getDataSet("wavefunction");
 
     // Resize datasets
-    ds_plus.resize({psi.grid.m_xPoints * psi.grid.m_yPoints, save_index + 1});
-    ds_zero.resize({psi.grid.m_xPoints * psi.grid.m_yPoints, save_index + 1});
-    ds_minus.resize({psi.grid.m_xPoints * psi.grid.m_yPoints, save_index + 1});
+    dsWavefunction.resize({wfn.grid().shape(), m_saveIndex + 1});
 
     // FFT so we update real-space arrays
-    psi.ifft();
+    wfn.ifft();
 
     // Save new wavefunction data
-    ds_plus.select({0, save_index}, {psi.grid.m_xPoints * psi.grid.m_yPoints, 1}).write(psi.plus);
-    ds_zero.select({0, save_index}, {psi.grid.m_xPoints * psi.grid.m_yPoints, 1}).write(psi.zero);
-    ds_minus.select({0, save_index}, {psi.grid.m_xPoints * psi.grid.m_yPoints, 1}).write(psi.minus);
+    dsWavefunction.select({0, m_saveIndex}, {wfn.grid().shape(), 1})
+            .write(wfn.component());
 
-    // Increase save index
-    save_index += 1;
+    m_saveIndex += 1;
+}
+
+DataManager2D::DataManager2D(const std::string& filename,
+                             const Parameters& params, const Grid2D& grid)
+    : filename{filename},
+      file{filename, HighFive::File::ReadWrite | HighFive::File::Create |
+                             HighFive::File::Truncate}
+{
+    saveParameters(params, grid);
+    generateWavefunctionDatasets(grid);
+}
+
+void DataManager2D::saveParameters(const Parameters& params, const Grid2D& grid)
+{
+    // Save condensate and time parameters to file
+    file.createDataSet("/parameters/intStrength", params.intStrength);
+    file.createDataSet("/parameters/numTimeSteps", params.numTimeSteps);
+    file.createDataSet("/parameters/dt", params.timeStep);
+
+    // Save grid parameters to file
+    auto [xPoints, yPoints] = grid.shape();
+    file.createDataSet("/grid/xPoints", xPoints);
+    file.createDataSet("/grid/yPoints", yPoints);
+
+    auto [xGridSpacing, yGridSpacing] = grid.gridSpacing();
+    file.createDataSet("/grid/xGridSpacing", xGridSpacing);
+    file.createDataSet("/grid/yGridSpacing", yGridSpacing);
+}
+
+void DataManager2D::generateWavefunctionDatasets(const Grid2D& grid)
+{
+    auto [xPoints, yPoints] = grid.shape();
+
+    // Define data space with arbitrary length of last dimension
+    HighFive::DataSpace dsWavefunction = HighFive::DataSpace(
+            {xPoints * yPoints, 1}, {xPoints * yPoints, HighFive::DataSpace::UNLIMITED});
+
+    // Use chunking
+    HighFive::DataSetCreateProps props;
+    props.add(HighFive::Chunking(std::vector<hsize_t>{(xPoints * yPoints) / 4, 1}));
+
+    // Create wavefunction dataset
+    file.createDataSet("wavefunction", dsWavefunction,
+                       HighFive::AtomicType<std::complex<double>>(), props);
+}
+
+void DataManager2D::saveWavefunctionData(Wavefunction2D& wfn)
+{
+    // Load in datasets
+    HighFive::DataSet dsWavefunction = file.getDataSet("wavefunction");
+
+    // Resize datasets
+    auto [xPoints, yPoints] = wfn.grid().shape();
+    dsWavefunction.resize({xPoints * yPoints, m_saveIndex + 1});
+
+    // FFT so we update real-space arrays
+    wfn.ifft();
+
+    // Save new wavefunction data
+    dsWavefunction.select({0, m_saveIndex}, {xPoints * yPoints, 1})
+            .write(wfn.component());
+
+    m_saveIndex += 1;
+}
+
+DataManager3D::DataManager3D(const std::string& filename,
+                             const Parameters& params, const Grid3D& grid)
+    : filename{filename},
+      file{filename, HighFive::File::ReadWrite | HighFive::File::Create |
+                             HighFive::File::Truncate}
+{
+    saveParameters(params, grid);
+    generateWavefunctionDatasets(grid);
+}
+
+void DataManager3D::saveParameters(const Parameters& params, const Grid3D& grid)
+{
+    // Save condensate and time parameters to file
+    file.createDataSet("/parameters/intStrength", params.intStrength);
+    file.createDataSet("/parameters/numTimeSteps", params.numTimeSteps);
+    file.createDataSet("/parameters/dt", params.timeStep);
+
+    // Save grid parameters to file
+    auto [xPoints, yPoints, zPoints] = grid.shape();
+    file.createDataSet("/grid/xPoints", xPoints);
+    file.createDataSet("/grid/yPoints", yPoints);
+    file.createDataSet("/grid/zPoints", yPoints);
+
+    auto [xGridSpacing, yGridSpacing, zGridSpacing] = grid.gridSpacing();
+    file.createDataSet("/grid/xGridSpacing", xGridSpacing);
+    file.createDataSet("/grid/yGridSpacing", yGridSpacing);
+    file.createDataSet("/grid/zGridSpacing", zGridSpacing);
+}
+
+void DataManager3D::generateWavefunctionDatasets(const Grid3D& grid)
+{
+    auto [xPoints, yPoints, zPoints] = grid.shape();
+
+    // Define data space with arbitrary length of last dimension
+    auto product = xPoints * yPoints * zPoints;
+    HighFive::DataSpace dsWavefunction = HighFive::DataSpace(
+            {product, 1}, {product, HighFive::DataSpace::UNLIMITED});
+
+    // Use chunking
+    HighFive::DataSetCreateProps props;
+    props.add(HighFive::Chunking(std::vector<hsize_t>{(product) / 4, 1}));
+
+    // Create wavefunction dataset
+    file.createDataSet("wavefunction", dsWavefunction,
+                       HighFive::AtomicType<std::complex<double>>(), props);
+}
+
+void DataManager3D::saveWavefunctionData(Wavefunction3D& wfn)
+{
+    // Load in datasets
+    HighFive::DataSet dsWavefunction = file.getDataSet("wavefunction");
+
+    // Resize datasets
+    auto [xPoints, yPoints, zPoints] = wfn.grid().shape();
+    auto product = xPoints * yPoints * zPoints;
+    dsWavefunction.resize({product, m_saveIndex + 1});
+
+    // FFT so we update real-space arrays
+    wfn.ifft();
+
+    // Save new wavefunction data
+    dsWavefunction.select({0, m_saveIndex}, {product, 1})
+            .write(wfn.component());
+
+    m_saveIndex += 1;
 }
