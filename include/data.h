@@ -1,7 +1,3 @@
-//
-// Created by mattw on 06/01/2022.
-//
-
 #ifndef BECPP_DATA_H
 #define BECPP_DATA_H
 
@@ -12,39 +8,27 @@
 #include "grid.h"
 #include "wavefunction.h"
 
-// Define arrays
-using doubleArray_t = std::vector<std::vector<double>>;
-
 struct Parameters
 {
-    Parameters(double c0, double c2, double p, double q, int nt, int nframe, double dt);
-
-    double c0;
-    double c2;
-    double p;
-    double q;
-    int nt;
-    int nframe;
-    std::complex<double> dt;
-
-    void imaginary_time(const std::string &toggle);
-
+    double intStrength{}; // Interaction strength
+    std::vector<double> trap{};
+    int numTimeSteps{};
+    std::complex<double> timeStep{};  // Time step
+    double currentTime{};
 };
 
-class DataManager
+class DataManager1D
 {
 private:
-    unsigned int save_index{0};
+    unsigned int saveIndex{0};
 
-    void save_parameters(const Parameters &params, const Grid2D &grid);
-
-    void generate_wfn_datasets(const Grid2D &grid);
+    void saveParameters(const Parameters &params, const Grid1D &grid);
+    void generateWavefunctionDatasets(const Grid1D &grid);
 
 public:
-    // Constructor
-    DataManager(const std::string &filename, const Parameters &params, const Grid2D &grid);
+    DataManager1D(const std::string &filename, const Parameters &params, const Grid1D &grid);
 
-    void save_wavefunction_data(Wavefunction2D &psi);
+    void saveWavefunctionData(Wavefunction1D &psi);
 
     std::string filename;
     HighFive::File file;
