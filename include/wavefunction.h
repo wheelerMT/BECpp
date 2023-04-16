@@ -36,6 +36,7 @@ public:
     explicit Wavefunction1D(const Grid1D& grid);
     ~Wavefunction1D();
 
+    [[nodiscard]] const Grid1D& grid() const;
     [[nodiscard]] complexVector_t& component();
     [[nodiscard]] complexVector_t& fourierComponent();
     [[nodiscard]] std::vector<double> density() const;
@@ -63,6 +64,7 @@ public:
     explicit Wavefunction2D(const Grid2D& grid);
     ~Wavefunction2D();
 
+    [[nodiscard]] const Grid2D& grid() const;
     [[nodiscard]] complexVector_t& component();
     [[nodiscard]] complexVector_t& fourierComponent();
     [[nodiscard]] std::vector<double> density() const;
@@ -90,6 +92,7 @@ public:
     explicit Wavefunction3D(const Grid3D& grid);
     ~Wavefunction3D();
 
+    [[nodiscard]] const Grid3D& grid() const;
     [[nodiscard]] complexVector_t& component();
     [[nodiscard]] complexVector_t& fourierComponent();
     [[nodiscard]] std::vector<double> density() const;

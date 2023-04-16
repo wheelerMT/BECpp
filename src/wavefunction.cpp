@@ -30,6 +30,8 @@ void Wavefunction1D::destroyFFTPlans() const
     fftw_destroy_plan(m_plans.plan_backward);
 }
 
+const Grid1D& Wavefunction1D::grid() const { return m_grid; }
+
 complexVector_t& Wavefunction1D::component() { return m_component; }
 
 complexVector_t& Wavefunction1D::fourierComponent()
@@ -113,6 +115,8 @@ void Wavefunction2D::destroyFFTPlans() const
     fftw_destroy_plan(m_plans.plan_forward);
     fftw_destroy_plan(m_plans.plan_backward);
 }
+
+const Grid2D& Wavefunction2D::grid() const { return m_grid; }
 
 complexVector_t& Wavefunction2D::component() { return m_component; }
 
@@ -218,6 +222,8 @@ void Wavefunction3D::destroyFFTPlans() const
     fftw_destroy_plan(m_plans.plan_forward);
     fftw_destroy_plan(m_plans.plan_backward);
 }
+
+const Grid3D& Wavefunction3D::grid() const { return m_grid; }
 
 complexVector_t& Wavefunction3D::component() { return m_component; }
 
