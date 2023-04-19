@@ -42,3 +42,5 @@ data
 python_tests
 .vs
 out/build
+build
+.cache
