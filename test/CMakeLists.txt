@@ -12,7 +12,6 @@ set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
 set(SOURCE_FILES test_grid.cpp test_wavefunction.cpp test_data.cpp)
-include_directories(${PROJECT_SOURCE_DIR}/include)
 
 add_executable(tests
         ${SOURCE_FILES}
