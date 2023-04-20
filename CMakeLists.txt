@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 20)
 
 set(SOURCES src/grid.cpp src/wavefunction.cpp src/data.cpp src/evolution.cpp)
 set(INCLUDES include/constants.h include/grid.h include/wavefunction.h
-        include/data.h include/evolution.h)
+  include/data.h include/evolution.h include/BECpp.h)
 
 find_package(OpenMP REQUIRED)
 find_package(HDF5 REQUIRED)
@@ -37,7 +37,7 @@ find_package(FFTW REQUIRED)
 
 add_library(${PROJECT_NAME} STATIC ${SOURCES} ${INCLUDES})
 
-target_include_directories(${PROJECT_NAME} PRIVATE
+target_include_directories(${PROJECT_NAME} PUBLIC
         ${PROJECT_SOURCE_DIR}/include/
         FFTW_INCLUDE_DIRS)
 
@@ -46,6 +46,8 @@ target_link_libraries(${PROJECT_NAME}
         hdf5::hdf5
         HighFive
         FFTW::Double)
+
+add_subdirectory(examples)
 
 enable_testing()
 add_subdirectory(test)

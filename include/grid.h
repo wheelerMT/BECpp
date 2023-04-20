@@ -40,6 +40,7 @@ public:
     [[nodiscard]] double gridSpacing() const;
     [[nodiscard]] double fourierGridSpacing() const;
     [[nodiscard]] double gridLength() const;
+    [[nodiscard]] std::vector<double>& xMesh();
     [[nodiscard]] std::vector<double> wavenumber() const;
 
     friend class Wavefunction;
@@ -75,6 +76,8 @@ public:
     [[nodiscard]] std::tuple<double, double> gridSpacing() const;
     [[nodiscard]] std::tuple<double, double> fourierGridSpacing() const;
     [[nodiscard]] std::tuple<double, double> gridLength() const;
+    [[nodiscard]] std::vector<double>& xMesh();
+    [[nodiscard]] std::vector<double>& yMesh();
     [[nodiscard]] std::vector<double> wavenumber() const;
 
     friend class Wavefunction;
@@ -97,8 +100,7 @@ private:
     void constructGridParams() override;
     void constructMesh() override;
 
-    const std::tuple<unsigned int, unsigned int, unsigned int>
-            m_gridPoints{};
+    const std::tuple<unsigned int, unsigned int, unsigned int> m_gridPoints{};
     const std::tuple<double, double, double> m_gridSpacing{};
     std::tuple<double, double, double> m_fourierGridSpacing{};
     std::tuple<double, double, double> m_gridLength{};
@@ -109,11 +111,15 @@ public:
            std::tuple<double, double, double> gridSpacing);
     ~Grid3D() override = default;
 
-    [[nodiscard]] std::tuple<unsigned int, unsigned int, unsigned int>
-    shape() const;
+    [[nodiscard]] std::tuple<unsigned int, unsigned int, unsigned int> shape()
+            const;
     [[nodiscard]] std::tuple<double, double, double> gridSpacing() const;
     [[nodiscard]] std::tuple<double, double, double> fourierGridSpacing() const;
     [[nodiscard]] std::tuple<double, double, double> gridLength() const;
+    [[nodiscard]] std::vector<double>& xMesh();
+    [[nodiscard]] std::vector<double>& yMesh();
+    [[nodiscard]] std::vector<double>& zMesh();
+
     [[nodiscard]] std::vector<double> wavenumber() const;
 
     friend class Wavefunction;

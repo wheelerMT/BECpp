@@ -88,11 +88,13 @@ void DataManager2D::generateWavefunctionDatasets(const Grid2D& grid)
 
     // Define data space with arbitrary length of last dimension
     HighFive::DataSpace dsWavefunction = HighFive::DataSpace(
-            {xPoints * yPoints, 1}, {xPoints * yPoints, HighFive::DataSpace::UNLIMITED});
+            {xPoints * yPoints, 1},
+            {xPoints * yPoints, HighFive::DataSpace::UNLIMITED});
 
     // Use chunking
     HighFive::DataSetCreateProps props;
-    props.add(HighFive::Chunking(std::vector<hsize_t>{(xPoints * yPoints) / 4, 1}));
+    props.add(HighFive::Chunking(
+            std::vector<hsize_t>{(xPoints * yPoints) / 4, 1}));
 
     // Create wavefunction dataset
     file.createDataSet("wavefunction", dsWavefunction,
@@ -107,9 +109,6 @@ void DataManager2D::saveWavefunctionData(Wavefunction2D& wfn)
     // Resize datasets
     auto [xPoints, yPoints] = wfn.grid().shape();
     dsWavefunction.resize({xPoints * yPoints, m_saveIndex + 1});
-
-    // FFT so we update real-space arrays
-    wfn.ifft();
 
     // Save new wavefunction data
     dsWavefunction.select({0, m_saveIndex}, {xPoints * yPoints, 1})
