@@ -4,7 +4,7 @@ void fourierStep(Wavefunction1D& wfn, const Parameters& params)
 {
     for (int i = 0; i < wfn.grid().shape(); ++i)
     {
-        wfn.component()[i] *=
+        wfn.fourierComponent()[i] *=
                 exp(-0.25 * I * params.timeStep * wfn.grid().wavenumber()[i]);
     }
 }
@@ -17,8 +17,9 @@ void fourierStep(Wavefunction2D& wfn, const Parameters& params)
         for (int j = 0; j < yPoints; ++j)
         {
             auto index = j + i * yPoints;
-            wfn.component()[index] *= exp(-0.25 * I * params.timeStep *
-                                          wfn.grid().wavenumber()[index]);
+            wfn.fourierComponent()[index] *=
+                    exp(-0.25 * I * params.timeStep *
+                        wfn.grid().wavenumber()[index]);
         }
     }
 }
@@ -33,8 +34,9 @@ void fourierStep(Wavefunction3D& wfn, const Parameters& params)
             for (int k = 0; k < zPoints; ++k)
             {
                 auto index = k + zPoints * (j + i * yPoints);
-                wfn.component()[index] *= exp(-0.25 * I * params.timeStep *
-                                              wfn.grid().wavenumber()[index]);
+                wfn.fourierComponent()[index] *=
+                        exp(-0.25 * I * params.timeStep *
+                            wfn.grid().wavenumber()[index]);
             }
         }
     }
