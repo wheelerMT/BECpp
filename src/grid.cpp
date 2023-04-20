@@ -96,7 +96,7 @@ void Grid2D::constructMesh()
         for (int j = 0; j < yPoints; ++j)
         {
             auto index = j + i * yPoints;
-            m_mesh.xMesh[index] = (j - xPoints / 2.) * xGridSpacing;
+            m_mesh.xMesh[index] = (i - xPoints / 2.) * xGridSpacing;
             m_mesh.yMesh[index] = (j - yPoints / 2.) * yGridSpacing;
             if (i < xPoints / 2)
             {
