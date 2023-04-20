@@ -33,10 +33,11 @@
 
 # Files
 CMakeSettings.json
+compile_commands.json
+*.h5
 
 # Ignored directories
-cmake-build-debug
-cmake-build-debug-coverage
+cmake_build_Debug
 .idea
 data
 python_tests
