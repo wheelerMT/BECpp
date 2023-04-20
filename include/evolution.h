@@ -7,10 +7,6 @@
 
 constexpr std::complex<double> I{0, 1};
 
-void applyThomasFermiDensity(Wavefunction1D& wfn, const Parameters& params);
-void applyThomasFermiDensity(Wavefunction2D& wfn, const Parameters& params);
-void applyThomasFermiDensity(Wavefunction3D& wfn, const Parameters& params);
-
 void fourierStep(Wavefunction1D& wfn, const Parameters& params);
 void fourierStep(Wavefunction2D& wfn, const Parameters& params);
 void fourierStep(Wavefunction3D& wfn, const Parameters& params);
