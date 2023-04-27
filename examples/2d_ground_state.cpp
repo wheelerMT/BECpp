@@ -1,4 +1,5 @@
 #include "BECpp.h"
+#include <chrono>
 
 constexpr auto GRID_POINTS_X = 128;
 constexpr auto GRID_POINTS_Y = 128;
@@ -9,13 +10,13 @@ Parameters createParams() {
   Parameters params{};
   params.intStrength = 1.0;
   params.trap = std::vector<double>(GRID_POINTS_X * GRID_POINTS_Y, 0.0);
-  params.numTimeSteps = 250;
+  params.numTimeSteps = 100;
   params.timeStep = std::complex<double>{0.0, -1e-2};
 
   return params;
 }
 
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
   // Create grid object
   std::tuple<unsigned int, unsigned int> points{GRID_POINTS_X, GRID_POINTS_Y};
   std::tuple<double, double> gridSpacing{GRID_SPACING_X, GRID_SPACING_Y};
@@ -40,6 +41,7 @@ int main(int argc, char *argv[]) {
   DataManager2D dm{"groundState.h5", params, grid};
 
   // Evolution loop
+  auto start = std::chrono::high_resolution_clock::now();
   for (int i = 0; i < params.numTimeSteps; ++i) {
     std::cout << "On iteration " << i << "\n";
     fourierStep(wavefunction, params);
@@ -57,6 +59,9 @@ int main(int argc, char *argv[]) {
       dm.saveWavefunctionData(wavefunction);
     }
   }
-
+  auto stop = std::chrono::high_resolution_clock::now();
+  auto duration =
+      std::chrono::duration_cast<std::chrono::seconds>(stop - start);
+  std::cout << duration.count() << '\n';
   return EXIT_SUCCESS;
 }

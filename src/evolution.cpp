@@ -1,6 +1,7 @@
 #include "evolution.h"
 
 void fourierStep(Wavefunction1D& wfn, const Parameters& params) {
+#pragma omp parallel for shared(wfn, params) default(none)
   for (int i = 0; i < wfn.grid().shape(); ++i) {
     wfn.fourierComponent()[i] *=
         exp(-0.25 * I * params.timeStep * wfn.grid().wavenumber()[i]);
@@ -9,6 +10,8 @@ void fourierStep(Wavefunction1D& wfn, const Parameters& params) {
 
 void fourierStep(Wavefunction2D& wfn, const Parameters& params) {
   auto [xPoints, yPoints] = wfn.grid().shape();
+#pragma omp parallel for collapse(2) \
+    shared(wfn, params, xPoints, yPoints) default(none)
   for (int i = 0; i < xPoints; ++i) {
     for (int j = 0; j < yPoints; ++j) {
       auto index = j + i * yPoints;
@@ -20,6 +23,8 @@ void fourierStep(Wavefunction2D& wfn, const Parameters& params) {
 
 void fourierStep(Wavefunction3D& wfn, const Parameters& params) {
   auto [xPoints, yPoints, zPoints] = wfn.grid().shape();
+#pragma omp parallel for collapse(3) \
+    shared(wfn, params, xPoints, yPoints, zPoints) default(none)
   for (int i = 0; i < xPoints; ++i) {
     for (int j = 0; j < yPoints; ++j) {
       for (int k = 0; k < zPoints; ++k) {
@@ -32,6 +37,7 @@ void fourierStep(Wavefunction3D& wfn, const Parameters& params) {
 }
 
 void interactionStep(Wavefunction1D& wfn, const Parameters& params) {
+#pragma omp parallel for shared(wfn, params) default(none)
   for (int i = 0; i < wfn.grid().shape(); ++i) {
     wfn.component()[i] *=
         exp(-I * params.timeStep *
@@ -42,6 +48,8 @@ void interactionStep(Wavefunction1D& wfn, const Parameters& params) {
 
 void interactionStep(Wavefunction2D& wfn, const Parameters& params) {
   auto [xPoints, yPoints] = wfn.grid().shape();
+#pragma omp parallel for collapse(2) \
+    shared(wfn, params, xPoints, yPoints) default(none)
   for (int i = 0; i < xPoints; ++i) {
     for (int j = 0; j < yPoints; ++j) {
       auto index = j + i * yPoints;
@@ -55,6 +63,8 @@ void interactionStep(Wavefunction2D& wfn, const Parameters& params) {
 
 void interactionStep(Wavefunction3D& wfn, const Parameters& params) {
   auto [xPoints, yPoints, zPoints] = wfn.grid().shape();
+#pragma omp parallel for collapse(3) \
+    shared(wfn, params, xPoints, yPoints, zPoints) default(none)
   for (int i = 0; i < xPoints; ++i) {
     for (int j = 0; j < yPoints; ++j) {
       for (int k = 0; k < zPoints; ++k) {
