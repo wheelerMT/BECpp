@@ -45,3 +45,4 @@ python_tests
 out/build
 build
 .cache
+Debug
