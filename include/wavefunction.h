@@ -28,7 +28,7 @@ struct FFTPlans {
  */
 class Wavefunction1D {
  private:
-  const Grid1D& m_grid;
+  Grid1D& m_grid;
   FFTPlans m_plans{};
   complexVector_t m_component{};
   complexVector_t m_fourierComponent{};
@@ -43,7 +43,7 @@ class Wavefunction1D {
    *
    * @param grid The 1D grid object of the system.
    */
-  explicit Wavefunction1D(const Grid1D& grid);
+  explicit Wavefunction1D(Grid1D& grid);
 
   /** Destructor that automatically cleans up stored FFT plans.
    *
@@ -55,7 +55,7 @@ class Wavefunction1D {
    * This is particularly useful when we need access to the underlying grid
    * variables, such as grid points, grid spacing etc.
    */
-  [[nodiscard]] const Grid1D& grid() const;
+  [[nodiscard]] Grid1D& grid() const;
 
   /** Returns a reference to the position space vector.
    */
@@ -111,7 +111,7 @@ class Wavefunction1D {
 
 class Wavefunction2D {
  private:
-  const Grid2D& m_grid;
+  Grid2D& m_grid;
   FFTPlans m_plans{};
   complexVector_t m_component{};
   complexVector_t m_fourierComponent{};
@@ -126,7 +126,7 @@ class Wavefunction2D {
    *
    * @param grid The 2D grid object of the system.
    */
-  explicit Wavefunction2D(const Grid2D& grid);
+  explicit Wavefunction2D(Grid2D& grid);
 
   /** Destructor that automatically cleans up stored FFT plans.
    *
@@ -138,7 +138,7 @@ class Wavefunction2D {
    * This is particularly useful when we need access to the underlying grid
    * variables, such as grid points, grid spacing etc.
    */
-  [[nodiscard]] const Grid2D& grid() const;
+  [[nodiscard]] Grid2D& grid() const;
 
   /** Returns a reference to the position space vector. Note that the return
    * type is still a 1D vector, but should be treated as a 2D vector.
@@ -196,7 +196,7 @@ class Wavefunction2D {
  */
 class Wavefunction3D {
  private:
-  const Grid3D& m_grid;
+  Grid3D& m_grid;
   FFTPlans m_plans{};
   complexVector_t m_component{};
   complexVector_t m_fourierComponent{};
@@ -211,7 +211,7 @@ class Wavefunction3D {
    *
    * @param grid The 3D grid object of the system.
    */
-  explicit Wavefunction3D(const Grid3D& grid);
+  explicit Wavefunction3D(Grid3D& grid);
 
   /** Destructor that automatically cleans up stored FFT plans.
    *
@@ -223,7 +223,7 @@ class Wavefunction3D {
    * This is particularly useful when we need access to the underlying grid
    * variables, such as grid points, grid spacing etc.
    */
-  [[nodiscard]] const Grid3D& grid() const;
+  [[nodiscard]] Grid3D& grid() const;
 
   /** Returns a reference to the position space vector. Note that the return
    * type is still a 1D vector, but should be treated as a 3D vector.
