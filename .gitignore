@@ -35,6 +35,9 @@
 CMakeSettings.json
 compile_commands.json
 *.h5
+# Doxygen
+html
+latex
 
 # Ignored directories
 cmake_build_Debug
