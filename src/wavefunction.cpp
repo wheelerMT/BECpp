@@ -1,6 +1,6 @@
 #include "wavefunction.h"
 
-Wavefunction1D::Wavefunction1D(const Grid1D& grid) : m_grid{grid} {
+Wavefunction1D::Wavefunction1D(Grid1D& grid) : m_grid{grid} {
   m_component.resize(grid.shape());
   m_fourierComponent.resize(grid.shape());
 
@@ -27,7 +27,7 @@ void Wavefunction1D::destroyFFTPlans() const {
   fftw_destroy_plan(m_plans.plan_backward);
 }
 
-const Grid1D& Wavefunction1D::grid() const { return m_grid; }
+Grid1D& Wavefunction1D::grid() const { return m_grid; }
 
 complexVector_t& Wavefunction1D::component() { return m_component; }
 
@@ -73,7 +73,7 @@ void Wavefunction1D::setComponent(complexVector_t& component) {
   updateAtomNumber();
 }
 
-Wavefunction2D::Wavefunction2D(const Grid2D& grid) : m_grid{grid} {
+Wavefunction2D::Wavefunction2D(Grid2D& grid) : m_grid{grid} {
   auto [xPoints, yPoints] = grid.shape();
   m_component.resize(xPoints * yPoints);
   m_fourierComponent.resize(xPoints * yPoints);
@@ -102,7 +102,7 @@ void Wavefunction2D::destroyFFTPlans() const {
   fftw_destroy_plan(m_plans.plan_backward);
 }
 
-const Grid2D& Wavefunction2D::grid() const { return m_grid; }
+Grid2D& Wavefunction2D::grid() const { return m_grid; }
 
 complexVector_t& Wavefunction2D::component() { return m_component; }
 
@@ -163,7 +163,7 @@ void Wavefunction2D::setComponent(complexVector_t& component) {
   updateAtomNumber();
 }
 
-Wavefunction3D::Wavefunction3D(const Grid3D& grid) : m_grid{grid} {
+Wavefunction3D::Wavefunction3D(Grid3D& grid) : m_grid{grid} {
   auto [xPoints, yPoints, zPoints] = grid.shape();
   m_component.resize(xPoints * yPoints * zPoints);
   m_fourierComponent.resize(xPoints * yPoints * zPoints);
@@ -194,7 +194,7 @@ void Wavefunction3D::destroyFFTPlans() const {
   fftw_destroy_plan(m_plans.plan_backward);
 }
 
-const Grid3D& Wavefunction3D::grid() const { return m_grid; }
+Grid3D& Wavefunction3D::grid() const { return m_grid; }
 
 complexVector_t& Wavefunction3D::component() { return m_component; }
 

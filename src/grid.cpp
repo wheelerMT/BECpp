@@ -49,7 +49,7 @@ double Grid1D::gridLength() const { return m_length; }
 
 std::vector<double>& Grid1D::xMesh() { return m_mesh.xMesh; }
 
-std::vector<double> Grid1D::wavenumber() const { return m_mesh.wavenumber; }
+std::vector<double>& Grid1D::wavenumber() { return m_mesh.wavenumber; }
 
 Grid2D::Grid2D(std::tuple<unsigned int, unsigned int> points,
                std::tuple<double, double> gridSpacing)
@@ -116,7 +116,7 @@ std::vector<double>& Grid2D::xMesh() { return m_mesh.xMesh; }
 
 std::vector<double>& Grid2D::yMesh() { return m_mesh.yMesh; }
 
-std::vector<double> Grid2D::wavenumber() const { return m_mesh.wavenumber; }
+std::vector<double>& Grid2D::wavenumber() { return m_mesh.wavenumber; }
 
 Grid3D::Grid3D(std::tuple<unsigned int, unsigned int, unsigned int> points,
                std::tuple<double, double, double> gridSpacing)
@@ -202,4 +202,4 @@ std::vector<double>& Grid3D::yMesh() { return m_mesh.yMesh; }
 
 std::vector<double>& Grid3D::zMesh() { return m_mesh.zMesh; }
 
-std::vector<double> Grid3D::wavenumber() const { return m_mesh.wavenumber; }
+std::vector<double>& Grid3D::wavenumber() { return m_mesh.wavenumber; }
