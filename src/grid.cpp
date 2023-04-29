@@ -4,8 +4,8 @@
 #include <cmath>
 #include <utility>
 
-Grid1D::Grid1D(unsigned int nx, double dx)
-    : m_gridPoints{nx}, m_gridSpacing{dx} {
+Grid1D::Grid1D(unsigned int xPoints, double xGridSpacing)
+    : m_gridPoints{xPoints}, m_gridSpacing{xGridSpacing} {
   Grid1D::constructGridParams();
   Grid1D::constructMesh();
 }
