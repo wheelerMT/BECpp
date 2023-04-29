@@ -15,8 +15,10 @@
 using complexVector_t = std::vector<std::complex<double>>;
 
 struct FFTPlans {
-  fftw_plan plan_forward{};
-  fftw_plan plan_backward{};
+  fftw_plan plan_forward{};  ///< Contains the plan for the forward fast Fourier
+                             /// transform
+  fftw_plan plan_backward{};  ///< Contains the plan for the backward fast
+                              /// Fourier transform
 };
 
 /** 1D wave function class.

@@ -19,9 +19,12 @@ class Grid {
 /** Struct containing the 1D grid meshes.
  */
 struct Mesh1D {
-  std::vector<double> xMesh{};
-  std::vector<double> xFourierMesh{};
-  std::vector<double> wavenumber{};
+  /** */
+  std::vector<double> xMesh{};  ///< x component of the position space mesh
+  std::vector<double>
+      xFourierMesh{};                ///< x component of the Fourier space mesh
+  std::vector<double> wavenumber{};  ///< wavenumber vector corresponding to the
+                                     /// Fourier space mesh
 };
 
 /** The 1D Grid class of the system.
@@ -42,7 +45,12 @@ class Grid1D : public Grid {
   Mesh1D m_mesh{};
 
  public:
-  Grid1D(unsigned int nx, double dx);
+  /** Constructs the 1D grid object.
+   *
+   * @param xPoints Number of grid points in the x direction.
+   * @param xGridSpacing Grid spacing in the x direction.
+   */
+  Grid1D(unsigned int xPoints, double xGridSpacing);
   ~Grid1D() override = default;
 
   /** Returns the shape of the grid.
@@ -76,11 +84,14 @@ class Grid1D : public Grid {
 /** Struct containing the 2D grid meshes.
  */
 struct Mesh2D {
-  std::vector<double> xMesh{};
-  std::vector<double> yMesh{};
-  std::vector<double> xFourierMesh{};
-  std::vector<double> yFourierMesh{};
-  std::vector<double> wavenumber{};
+  std::vector<double> xMesh{};  ///< x component of the position space mesh
+  std::vector<double> yMesh{};  ///< y component of the position space mesh
+  std::vector<double>
+      xFourierMesh{};  ///< x component of the Fourier space mesh
+  std::vector<double>
+      yFourierMesh{};                ///< y component of the Fourier space mesh
+  std::vector<double> wavenumber{};  ///< wavenumber vector corresponding to the
+                                     /// Fourier space mesh
 };
 
 /** The 2D Grid class of the system.
@@ -101,6 +112,11 @@ class Grid2D : public Grid {
   Mesh2D m_mesh{};
 
  public:
+  /** Constructs the 2D grid object.
+   *
+   * @param points Tuple containing desired (xPoints, yPoints)
+   * @param gridSpacing Tuple containing desired (xGridSpacing, yGridSpacing)
+   */
   Grid2D(std::tuple<unsigned int, unsigned int> points,
          std::tuple<double, double> gridSpacing);
   ~Grid2D() override = default;
@@ -146,13 +162,17 @@ class Grid2D : public Grid {
 /** Struct containing the 3D grid meshes.
  */
 struct Mesh3D {
-  std::vector<double> xMesh{};
-  std::vector<double> yMesh{};
-  std::vector<double> zMesh{};
-  std::vector<double> xFourierMesh{};
-  std::vector<double> yFourierMesh{};
-  std::vector<double> zFourierMesh{};
-  std::vector<double> wavenumber{};
+  std::vector<double> xMesh{};  ///< x component of the position space mesh
+  std::vector<double> yMesh{};  ///< y component of the position space mesh
+  std::vector<double> zMesh{};  ///< z component of the position space mesh
+  std::vector<double>
+      xFourierMesh{};  ///< x component of the Fourier space mesh
+  std::vector<double>
+      yFourierMesh{};  ///< y component of the Fourier space mesh
+  std::vector<double>
+      zFourierMesh{};                ///< z component of the Fourier space mesh
+  std::vector<double> wavenumber{};  ///< wavenumber vector corresponding to the
+                                     /// Fourier space mesh
 };
 
 /** The 3D Grid class of the system.
@@ -173,6 +193,13 @@ class Grid3D : public Grid {
   Mesh3D m_mesh{};
 
  public:
+  /** Constructs the 3D grid object.
+   *
+   * @param points Tuple containing desired (xPoints, yPoints, zPoints)
+   * @param gridSpacing Tuple containing desired (xGridSpacing, yGridSpacing,
+   * zGridSpacing)
+   */
+
   Grid3D(std::tuple<unsigned int, unsigned int, unsigned int> points,
          std::tuple<double, double, double> gridSpacing);
   ~Grid3D() override = default;

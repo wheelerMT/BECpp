@@ -12,11 +12,11 @@
 /** Struct containing all the parameters of the system.
  */
 struct Parameters {
-  double intStrength{};             /// Interaction strength
-  std::vector<double> trap{};       /// Trapping potential
-  int numTimeSteps{};               /// Number of time steps in the simulation
-  std::complex<double> timeStep{};  // Time step increment
-  double currentTime{};             /// Current time of the simulation
+  double intStrength{};             ///< Interaction strength
+  std::vector<double> trap{};       ///< Trapping potential
+  int numTimeSteps{};               ///< Number of time steps in the simulation
+  std::complex<double> timeStep{};  ///< Time step increment
+  double currentTime{};             ///< Current time of the simulation
 };
 
 /** DataManager class that handles all the details of the save system of BEC++.
@@ -49,8 +49,8 @@ class DataManager1D {
    */
   void saveWavefunctionData(Wavefunction1D& wfn);
 
-  std::string filename;  /// Filename of the .hdf5 file
-  HighFive::File file;   /// Reference to the underlying .hdf5 file.
+  std::string filename;  ///< Filename of the .hdf5 file
+  HighFive::File file;   ///< Reference to the underlying .hdf5 file.
 };
 
 /** DataManager class that handles all the details of the save system of BEC++.
@@ -83,9 +83,9 @@ class DataManager2D {
    */
   void saveWavefunctionData(Wavefunction2D& wfn);
 
-  std::string filename;  /// Filename of the .hdf5 file
+  std::string filename;  ///< Filename of the .hdf5 file
 
-  HighFive::File file;  /// Reference to the underlying .hdf5 file.
+  HighFive::File file;  ///< Reference to the underlying .hdf5 file.
 };
 
 /** DataManager class that handles all the details of the save system of BEC++.
@@ -118,9 +118,9 @@ class DataManager3D {
    */
   void saveWavefunctionData(Wavefunction3D& wfn);
 
-  std::string filename;  /// Filename of the .hdf5 file
+  std::string filename;  ///< Filename of the .hdf5 file
 
-  HighFive::File file;  /// Reference to the underlying .hdf5 file.
+  HighFive::File file;  ///< Reference to the underlying .hdf5 file.
 };
 
 #endif  // BECPP_DATA_H
