@@ -1,5 +1,5 @@
 //
-// Created by mattw on 13/01/2022.
+// WARNING: This file is deprecated, it is here purely for educational purposes and should not be used!
 //
 
 #ifndef BECPP_PHASE_H
