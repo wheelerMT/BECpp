@@ -35,8 +35,8 @@
 CMakeSettings.json
 compile_commands.json
 *.h5
+
 # Doxygen
-html
 latex
 
 # Ignored directories
