@@ -13,7 +13,8 @@ BEC++ provides solvers for the Gross-Pitaevskii equation that are parallelised u
 It provides support for 1D, 2D and 3D systems, with an intuite API.
 It revolves around a `Wavefunction` class that handles the details of the wave function in one, seamless interface.
 
-For examples of what BEC++ can do, see the [examples](examples/) folder.
+The documentation for BEC++ is found [here](https://wheelermt.github.io/BECpp/).
+For specific examples of C++ code showing what BEC++ can do, see the [examples](examples/) folder.
 
 ## What about other BEC systems?
 Currently, BEC++ only supports scalar BEC systems.
