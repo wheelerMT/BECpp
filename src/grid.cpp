@@ -88,9 +88,12 @@ void Grid2D::constructMesh() {
       m_mesh.yMesh[index] = (j - yPoints / 2.) * yGridSpacing;
       if (i < xPoints / 2) {
         m_mesh.xFourierMesh[index] = i * xFourierGridSpacing;
-        m_mesh.yFourierMesh[index] = j * yFourierGridSpacing;
       } else {
         m_mesh.xFourierMesh[index] = (i - xPoints) * xFourierGridSpacing;
+      }
+      if (j < yPoints / 2) {
+        m_mesh.yFourierMesh[index] = j * yFourierGridSpacing;
+      } else {
         m_mesh.yFourierMesh[index] = (j - yPoints) * yFourierGridSpacing;
       }
 
@@ -164,11 +167,17 @@ void Grid3D::constructMesh() {
 
         if (i < xPoints / 2) {
           m_mesh.xFourierMesh[index] = i * xFourierGridSpacing;
-          m_mesh.yFourierMesh[index] = j * yFourierGridSpacing;
-          m_mesh.zFourierMesh[index] = k * yFourierGridSpacing;
         } else {
           m_mesh.xFourierMesh[index] = (i - xPoints) * xFourierGridSpacing;
+        }
+        if (j < yPoints / 2) {
+          m_mesh.yFourierMesh[index] = j * yFourierGridSpacing;
+        } else {
           m_mesh.yFourierMesh[index] = (j - yPoints) * yFourierGridSpacing;
+        }
+        if (k < zPoints / 2) {
+          m_mesh.zFourierMesh[index] = k * yFourierGridSpacing;
+        } else {
           m_mesh.zFourierMesh[index] = (k - zPoints) * yFourierGridSpacing;
         }
 
